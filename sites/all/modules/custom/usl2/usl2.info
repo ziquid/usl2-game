@@ -1,0 +1,6 @@
+name = USL2
+description = Uprising: St. Louis 2 game
+package = Ziquid games
+core = 7.x
+
+version = "7.x-0.1"

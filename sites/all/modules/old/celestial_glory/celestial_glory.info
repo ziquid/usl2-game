@@ -1,0 +1,7 @@
+; $Id$
+name = Celestial Glory
+description = Celestial Glory game
+package = cheekdotcom games
+core = 6.x
+
+version = "6.x-0.01"

@@ -1,0 +1,915 @@
+body {
+  background: #100020;
+}
+
+a, a:link, a:visited, a:hover, a:active {
+  color: #8dd;
+}
+
+li {
+  list-style: url('/sites/default/files/images/redbullet.png');
+}
+
+.header {
+/*  background: url(/sites/default/files/images/stlouis_header_citycenter.png?1); */
+  background: url(/sites/default/files/images/seoul_header_citycenter.png?2);
+  background-size: 360px;
+}
+
+.header.hood1 {
+  background: url(/sites/default/files/images/stlouis_header_bg_1.jpg) !important;
+}
+
+.header.hood2 {
+  background: url(/sites/default/files/images/stlouis_header_bg_2.jpg) !important;
+}
+
+.header.hood3 {
+  background: url(/sites/default/files/images/stlouis_header_bg_3.jpg) !important;
+}
+
+.header.hood4 {
+  background: url(/sites/default/files/images/stlouis_header_bg_4.jpg) !important;
+}
+
+.header.hood5 {
+  background: url(/sites/default/files/images/stlouis_header_bg_5.jpg) !important;
+}
+
+.header.hood6 {
+  background: url(/sites/default/files/images/stlouis_header_bg_6.jpg) !important;
+}
+
+.header .experience {
+  border-bottom: 1px solid #333833 !important;
+}
+
+.title.loot {
+  color: #d4c41c;
+}
+
+
+.welcome .subtitle {
+  color: #1ca443;
+  font-weight: bold;
+  margin-top: 9px;
+}
+
+.welcome-continue a, .election-continue a {
+  border: 1px solid #1ca443;
+  background-color: #1ca443;
+}
+
+.main-menu, .elders-menu {
+  font-weight: bold;
+}
+
+.main-menu .menu-option {
+  border: 2px solid white;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  width: 45%;
+  margin: 6px 2%;
+  float: left;
+  background: #444f44;
+}
+
+.elders-menu .menu-option {
+  border: 2px solid white;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  width: 72%;
+  margin: 10px 14%;
+  text-align: center;
+  background: #444f44;
+}
+
+.menu-option a {
+  text-decoration: none;
+}
+
+.menu-option.not-yet {
+  text-decoration: none;
+  color: #bbb;
+}
+
+
+.quest-num {
+  color: #4000f0;
+  -webkit-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  transform: rotate(270deg);
+  display: inline-block;
+  float: left;
+  position: relative;
+  top: 4px;
+  left: -5px;
+  border-bottom: 1px solid blue;
+  border-radius: 3px;
+}
+
+
+.quests, .land {
+  clear: both;
+  border: 1px solid #306;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  margin: 12px 9px 3px 5px;
+  padding: 1px 2px 2px 2px;
+  background-color: #180033;
+  -moz-box-shadow: 2px 2px 14px 2px #202088;
+  -webkit-box-shadow: 2px 2px 14px 2px #202088;
+  box-shadow: 2px 2px 14px 2px #202088;
+}
+
+
+.quests {
+  min-height: 158px;
+}
+
+
+.land {
+  min-height: 146px;
+}
+
+
+.quests p {
+  margin-left: 101px;
+}
+
+
+.quests p.quote {
+  padding: 8px;
+  margin: 12px 6px 6px 6px;
+  color: #8dd;
+  font-size: 11px;
+  border-top: 1px solid #dff;
+  border-left: 1px solid #dff;
+  border-radius: 2px;
+  font-family: Nova Square;
+}
+
+
+.quests p.quote.you {
+  color: #8d8;
+  border-top: 1px solid #dfd;
+  border-left: 1px solid #dfd;
+  font-size: 12px;
+  font-family: Ropa Sans;
+}
+
+
+.quests.succeeded, .land.succeeded {
+  min-height: 36px;
+  background-color: #114420;
+  box-shadow: 2px 2px 14px 2px #208820;
+}
+
+
+.quests.succeeded .title, .land.succeeded .title {
+  color: #22cc33;
+}
+
+
+.quests.failed, .land.failed {
+  min-height: 64px;
+  background-color: #441120;
+  box-shadow: 2px 2px 14px 2px #882020;
+}
+
+
+.quests.failed .title, .land.failed .title {
+  color: #cc2233;
+}
+
+
+.quests.failed .title span, .land.failed .title span {
+  background-color: #707070;
+}
+
+
+.quests .quest-perform-button-wrapper {
+  margin: 3px;
+  text-align: right;
+}
+
+
+.quests .quest-perform-button {
+  color: white;
+  display: inline-block;
+  margin: 8px 2px 4px 20px;
+}
+
+
+.quests .quest-perform-button a {
+  color: white;
+  text-decoration: none;
+}
+
+
+.failed .placeholder {
+  color: #ff6688;
+  background-color: #707070;
+  text-shadow: 1px 1px black;
+  padding: 2px;
+  font-size: 15px;
+}
+
+
+.failed .quest-required {
+  width: 100%;
+}
+
+
+.quests .x2 {
+  color: #208820;
+  font-weight: bold;
+}
+
+
+.goals {
+  clear: both;
+  border: 1px solid #306;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 8px 9px 3px 5px;
+  padding: 4px 8px 4px 4px;
+  background-color: #003018;
+  -moz-box-shadow: 2px 2px 14px 2px #208820;
+  -webkit-box-shadow: 2px 2px 14px 2px #208820;
+  box-shadow: 2px 2px 14px 2px #208820;
+}
+
+
+.goals .title {
+  margin: 2px;
+  font-size: 11px;
+}
+
+
+.goals.current .title {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  font-size: 16px;
+}
+
+
+.goals .subtitle {
+  margin: 2px;
+  font-size: 10px;
+}
+
+
+.goals.current .subtitle {
+  margin-top: 5px;
+}
+
+
+.goals p {
+  font-size: 10px;
+  color: #eee;
+  display: none;
+  width: 270px;
+  position: relative;
+  top: 0px;
+  right: 0px;
+}
+
+
+.goals p.show {
+  display: inline-block;
+}
+
+
+.goals.current p {
+  display: block;
+  font-size: 12px;
+  padding-left: 0px;
+}
+
+
+.goals p strong {
+  color: #ccc75b;
+}
+
+
+.goals a.toggle {
+  text-decoration: none;
+  position: relative;
+  top: 4px;
+  left: 0px;
+  vertical-align: top;
+}
+
+
+.goals.current .toggle {
+  display: none;
+}
+
+
+.level-up {
+  clear: both;
+  border: 1px solid #306;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 12px 9px 3px 5px;
+  padding: 4px 4px 4px 4px;
+  background-color: #003018;
+  -moz-box-shadow: 2px 2px 14px 2px #208820;
+  -webkit-box-shadow: 2px 2px 14px 2px #208820;
+  box-shadow: 2px 2px 14px 2px #208820;
+}
+
+
+.level-up .title {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+
+.quests .quest-description,
+.land .land-description {
+  font-size: 11px;
+  font-family: Ropa Sans;
+  margin-bottom: 9px;
+}
+
+
+.quests .quest-name {
+  font-size: 18px;
+}
+
+
+.land .land-name {
+  font-size: 15px;
+}
+
+
+.quests .quest-name,
+.land .land-name {
+  font-weight: bold;
+  font-family: TenbyFiveRegular;
+  text-transform: uppercase;
+  color: #7cc;
+}
+
+
+.land .land-requisites,
+.land .land-disbursements,
+.quests .quest-requisites,
+.quests .quest-disbursements {
+  color: #8dd;
+  margin: 9px 0 4px;
+  font-size: 13px;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+
+.quests .quest-experience, .quests .quest-money,
+.quests .quest-required_energy, .quests .quest-required_stuff,
+.quests .quest-payout,
+.goals ul li,
+.land .land-cost, .land .land-action-cost, .land .land-payout,
+.land .land-required_level, .land-soon .land-action-cost {
+  color: #35e;
+  margin-left: 4px !important;
+  padding: 2px 0 2px 8px;
+  border-left: 1px solid #35e;
+  border-bottom: 1px solid #35e;
+  border-radius: 10px 0 0 3px;
+}
+
+
+.quests .quest-payout .highlight,
+.quests .quest-experience .highlight {
+  background-color: #444;
+  color: #33bbbb;
+}
+
+
+.quests .quest-required_stuff.missing,
+.land .land-required_level {
+  color: #f00;
+  border-left-color: #f00;
+  border-bottom-color: #f00;
+}
+
+
+.quests .quest-loot {
+  color: #d4c41c;
+  margin-left: 4px !important;
+  padding: 2px 0 2px 8px;
+  border-left: 1px solid #35e;
+  border-bottom: 1px solid #35e;
+  border-radius: 10px 0 0 3px;
+}
+
+
+.quests .quest-payout.negative,
+.land .land-payout.negative, .land-soon .land-payout.negative {
+  color: #a41c43;
+  border-left: 1px solid #a41c43;
+  border-bottom: 1px solid #a41c43;
+}
+
+
+.quests .quest-description, .land .land-description {
+  color: #eee;
+}
+
+.quests-soon .quest-experience, .quests-soon .quest-money,
+.quests-soon .quest-required_energy,
+.land-soon .land-cost, .land-soon .land-payout,
+.land-soon .land-required_level {
+  color: #0e5221;
+}
+
+.quests-soon a, .quests-soon a:link, .quests-soon a:visited,
+.quests-soon a:hover, .quests-soon a:active,
+.land-soon a, .land-soon a:link, .land-soon a:visited,
+.land-soon a:hover, .land-soon a:active {
+    color: #0e5221;
+}
+
+.quest-succeeded, .election-succeeded, .land-succeeded {
+  color: #1ca443;
+  text-transform: uppercase;
+  margin: 4px 0 6px;
+  font-size: 18px;
+  text-shadow: 1px 2px black;
+  padding: 2px;
+  font-family: Share Tech Mono;
+}
+
+.quest-failed, .election-failed, .land-failed {
+  color: #a41c43;
+}
+
+
+.quest-do-again, .land-buy-again {
+  text-align: right;
+  margin: 9px 0px 4px 240px;
+}
+
+
+.quest-do-again-inside, .land-buy-again-inside {
+  padding: 5px;
+  background-color: #138;
+  border: 1px solid #24c;
+  border-radius: 10px 3px;
+  white-space: nowrap;
+  box-shadow: 2px 2px 14px 2px #266;
+  -webkit-box-shadow: 2px 2px 14px 2px #266;
+}
+
+
+.quest-do-again a, .land-buy-again a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.quests .quest-name.loot {
+  color: #d4c41c;
+}
+
+
+.land .land-owned {
+  color: #fff;
+}
+
+
+.level-up {
+  border: 1px solid #0e5221;
+  background-color: #0e5221;
+}
+
+.choose-clan-name {
+  margin-left: 6px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #1ca443;
+}
+
+.choose-clan-name a {
+  text-decoration: none;
+}
+
+.choose-clan-slogan {
+  margin: 0px 0px 8px 54px;
+  font-style: italic;
+  font-size: 11px;
+  color: #bcb;
+}
+
+.help .subtitle {
+  margin: 8px 0 4px;
+}
+
+.help .subtitle {
+  color: #1ca443;
+}
+
+
+.holodad {
+  background-image:
+    url('/sites/default/files/images/stlouis_holodad.png?0');
+  background-repeat: no-repeat;
+  background-position: 5px 5px;
+  background-size: 96px 144px;
+  width: 106px;
+  height: 154px;
+  float: left;
+}
+
+
+.restaurant_owner {
+  background-image:
+    url('/sites/default/files/images/stlouis_restaurant_owner.png?0');
+  background-repeat: no-repeat;
+  background-position: 5px 5px;
+  background-size: 96px 144px;
+  width: 106px;
+  height: 154px;
+  float: left;
+}
+
+
+.wise_old_man_large {
+  background-image:
+    url('/sites/default/files/images/stlouis_wise_old_man_large.png?1');
+  background-repeat: no-repeat;
+  background-position: 5px 5px;
+  background-size: 96px 144px;
+  width: 106px;
+  height: 154px;
+  float: left;
+}
+
+
+.wise_old_man_large.point {
+  background-image:
+    url('/sites/default/files/images/stlouis_wise_old_man_large_point.png?1');
+}
+
+.wise_old_man_small {
+  background-image:
+    url('/sites/default/files/images/stlouis_wise_old_man_small.png?1');
+  background-repeat: no-repeat;
+  background-position: 5px 5px;
+  background-size: 60px 90px;
+  width: 70px;
+  height: 100px;
+  float: left;
+}
+
+.username-error {
+  color: #a41c43;
+}
+
+.elections-header {
+  color: #1aa443;
+}
+
+.elections .election-details .action, .land .land-buy-button,
+.land .land-sell-button, .land .land-perform-button,
+.send-message-send-wrapper .send-message-send,
+.quests .quest-perform-button {
+  padding: 3px 12px;
+  background-color: #24c;
+  border: 1px solid #35e;
+  border-radius: 10px 3px;
+  -webkit-box-shadow: 2px 2px 14px 2px #208888;
+  box-shadow: 2px 2px 14px 2px #208888;
+}
+
+.send-message .block-user {
+  padding: 3px 12px;
+  background-color: #188433;
+  border: 1px solid #188433;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+}
+
+.send-message .block-user a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.elections .election-details .action.not-yet, .land .land-buy-button.not-yet,
+.land .land-sell-button.not-yet {
+  background-color: #333833;
+  border: 1px solid #333833;
+}
+
+.elections .election-details .action a, .land .land-buy-button a,
+.land .land-sell-button a, .land form input.land-buy-button {
+  color: #fff;
+  text-decoration: none;
+}
+
+.try-an-election {
+  background-color: #188433 !important;
+  border-left: 1px solid #183384 !important;
+  border-bottom: 1px solid #183384 !important;
+}
+
+.try-an-election.not-yet {
+  background-color: #333833 !important;
+  border: 1px solid #333833 !important;
+}
+
+.news .message-body {
+  border: 1px solid #111128 !important;
+  background-color: #111128 !important;
+}
+
+.news .button {
+  background-color: #0e2152 !important;
+  border: 1px solid #0e2152 !important;
+  box-shadow: 1px 1px 14px 1px #186666;
+  font-family: Droid Sans;
+}
+
+
+.news.small .button {
+  font-size: 10px;
+}
+
+
+.news .button.active {
+  background-color: #183384 !important;
+  border: 1px solid #8dd !important;
+  -moz-box-shadow: 2px 2px 14px 2px #208888;
+  -webkit-box-shadow: 2px 2px 14px 2px #208888;
+  box-shadow: 2px 2px 14px 2px #208888;
+}
+
+.news .message-reply {
+  background-color: #188433 !important;
+  border: 1px solid #188433 !important;
+}
+
+.news .message-reply.not-yet,
+.news .button.not-yet {
+  background-color: #bbb !important;
+  border: 1px solid #bbb !important;
+  color: black;
+}
+
+
+.user-profile .subtitle {
+  font-family: Share Tech Mono;
+  color: #8dd;
+  text-transform: uppercase;
+  margin: 12px 0 8px;
+}
+
+
+.user-profile .action {
+  background-color: #24c !important;
+  border: 1px solid #35e !important;
+  -webkit-box-shadow: 2px 2px 14px 2px #208888;
+  box-shadow: 2px 2px 14px 2px #208888;
+}
+
+
+.user-profile .action.not-yet {
+  background-color: #333833 !important;
+  border: 1px solid #333833 !important;
+  -webkit-box-shadow: 2px 2px 14px 1px #588;
+  box-shadow: 2px 2px 14px 1px #588;
+}
+
+
+.user-profile .event-status {
+  color: #b33;
+}
+
+.highlighted {
+  color: #188433;
+  font-weight: bold;
+}
+
+.event-info .subtitle {
+  color: #c33;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.event-info .subsubtitle {
+  color: #aaa;
+}
+
+
+.welcome {
+  border: 1px solid #306;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 12px 9px 3px 5px;
+  padding: 4px 8px 4px 4px;
+  background-color: #200040;
+  -moz-box-shadow: 2px 2px 14px 2px #202088;
+  -webkit-box-shadow: 2px 2px 14px 2px #202088;
+  box-shadow: 2px 2px 14px 2px #202088;
+  min-height: 154px;
+}
+
+
+p.quote {
+  padding: 8px;
+  margin: 12px 12px 6px 112px;
+  color: #8dd;
+  font-size: 13px;
+  border-top: 1px solid #dff;
+  border-left: 1px solid #dff;
+  border-radius: 2px;
+  font-family: Nova Square;
+}
+
+
+#copyright {
+  color: #447;
+}
+
+
+.competency-pip {
+  border-right: solid 2px #477 !important;
+}
+
+
+.competency-pip.attained {
+  border-right: solid 2px #8dd !important;
+}
+
+
+.hierarchy {
+  clear: both;
+  border: 1px solid #306;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  margin: 8px 9px 3px 5px;
+  padding: 4px 8px 4px 4px;
+  background-color: #002010;
+  -moz-box-shadow: 2px 2px 14px 2px #146014;
+  -webkit-box-shadow: 2px 2px 14px 2px #146014;
+  box-shadow: 2px 2px 14px 2px #146014;
+}
+
+
+.hierarchy .title {
+  font-family: TenbyFiveRegular;
+  margin-top: 5px;
+  margin-left: 0px;
+  text-align: left;
+}
+
+
+.hierarchy .description {
+  margin-bottom: 10px;
+  margin-left: 8px;
+  color: #ddd;
+}
+
+
+.hierarchy .level-count {
+  margin-bottom: 10px;
+  margin-left: 8px;
+  color: #bb8;
+}
+
+
+.hierarchy .hierarchy-requisites,
+.hierarchy .hierarchy-progress,
+.hierarchy .hierarchy-satisfied {
+  color: #55d0aa;
+  margin: 9px 0 4px 18px;
+  font-size: 13px;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+
+.hierarchy .hierarchy-requisites.FALSE,
+.hierarchy .hierarchy-progress.FALSE {
+  color: #b33;
+}
+
+
+.hierarchy .hierarchy-progress {
+  margin-left: 30px !important;
+}
+
+
+.hierarchy .hierarchy-needed,
+.hierarchy .hierarchy-attained {
+  color: #395;
+  margin-left: 30px;
+  padding: 2px 0 2px 8px;
+  border-left: 1px solid #395;
+  border-bottom: 1px solid #395;
+  border-radius: 10px 0 0 3px;
+}
+
+
+.hierarchy .hierarchy-needed.FALSE,
+.hierarchy .hierarchy-attained.FALSE {
+  color: #b33;
+  border-left: 1px solid #b33;
+  border-bottom: 1px solid #b33;
+}
+
+
+.hierarchy .hierarchy-needed span,
+.hierarchy .hierarchy-attained span {
+  color: #3b3;
+  background-color: #444;
+}
+
+
+.hierarchy .hierarchy-needed.FALSE span,
+.hierarchy .hierarchy-attained.FALSE span {
+  color: #b33;
+}
+
+
+.hierarchy .hierarchy-attained {
+  margin-bottom: 12px;
+}
+
+
+.hierarchy .hierarchy-attained.FALSE {
+  color: #a41c43;
+  border-left: 1px solid #a41c43;
+  border-bottom: 1px solid #a41c43;
+  font-weight: bold;
+}
+
+
+.hierarchy .hierarchy-needed span.FALSE,
+.hierarchy .hierarchy-attained.FALSE span {
+  color: #bb3333;
+  background-color: #333;
+}
+
+
+/* LEAFLET */
+
+.leaflet-popup-content-wrapper {
+  background: #102040 !important;
+}
+
+
+.leaflet-marker-icon span {
+  padding-left: 5px;
+  padding-top: 2px;
+  position: absolute;
+}
+
+
+.leaflet-marker-icon.flags {
+  background: url(/sites/default/files/images/flags/flags.png)
+    top left no-repeat;
+}
+
+
+.leaflet-marker-icon.flags span {
+  padding-top: 5px;
+}
+
+
+.leaflet-marker-icon.flag_1_blue_blue {
+  background: url(/sites/default/files/images/flags/flag_1_blue_blue.png)
+    top left no-repeat;
+}
+
+
+.leaflet-marker-icon.flag_1_green_green {
+  background: url(/sites/default/files/images/flags/flag_1_green_green.png)
+    top left no-repeat;
+}
+
+
+.leaflet-marker-icon.flag_1_purple_purple {
+  background: url(/sites/default/files/images/flags/flag_1_purple_purple.png)
+    top left no-repeat;
+}
+
+
+.leaflet-marker-icon.flag_1_red_red {
+  background: url(/sites/default/files/images/flags/flag_1_red_red.png)
+    top left no-repeat;
+}
+
+
+.arrows {
+  font-size: 125%;
+  line-height: 75%;
+  letter-spacing: -3px;
+}
+
+.arrows.big {
+  font-size: 175%;
+  line-height: 60%;
+  letter-spacing: -10px;
+}

@@ -1,0 +1,397 @@
+body {
+  background: #1c130b;
+}
+
+a, a:link, a:visited, a:hover, a:active {
+  color: #bf6f2f;
+}
+
+li {
+  list-style: url('/sites/default/files/images/redbullet.png');
+}
+
+.header {
+  background: url(/sites/default/files/images/celestial_glory_header_bg.jpg) !important;
+}
+
+.header.hood1 {
+  background: url(/sites/default/files/images/celestial_glory_header_bg_1.jpg) !important;
+}
+
+.header.hood2 {
+  background: url(/sites/default/files/images/celestial_glory_header_bg_2.jpg) !important;
+}
+
+.header.hood3 {
+  background: url(/sites/default/files/images/celestial_glory_header_bg_3.jpg) !important;
+}
+
+.header.hood4 {
+	background: url(/sites/default/files/images/celestial_glory_header_bg_4.jpg) !important;
+}
+
+.header.hood5 {
+  background: url(/sites/default/files/images/celestial_glory_header_bg_5.jpg) !important;
+}
+
+.header.hood6 {
+  background: url(/sites/default/files/images/celestial_glory_header_bg_6.jpg) !important;
+}
+
+.header.hood7 {
+  background: url(/sites/default/files/images/celestial_glory_header_bg_7.jpg) !important;
+}
+
+.header.hood8 {
+  background: url(/sites/default/files/images/celestial_glory_header_bg_8.jpg) !important;
+}
+
+.header.hood9 {
+  background: url(/sites/default/files/images/celestial_glory_header_bg_9.jpg) !important;
+}
+
+.header.hood10 {
+  background: url(/sites/default/files/images/celestial_glory_header_bg_10.jpg) !important;
+}
+
+.header.hood11 {
+  background: url(/sites/default/files/images/celestial_glory_header_bg_11.jpg) !important;
+}
+
+.header.hood12 {
+  background: url(/sites/default/files/images/celestial_glory_header_bg_12.jpg) !important;
+}
+
+.header.hood13 {
+  background: url(/sites/default/files/images/celestial_glory_header_bg_13.jpg) !important;
+}
+
+.header.hood14 {
+  background: url(/sites/default/files/images/celestial_glory_header_bg_14.jpg) !important;
+}
+
+.header .home img {
+  width: 30px;
+  height: 24px;
+}
+
+.header .experience {
+  border-bottom: 1px solid #333833 !important;
+}
+
+.title.loot {
+  color: #d4c41c;
+}
+
+.welcome .subtitle {
+  color: #bf6f2f;
+  font-weight: bold;
+  margin-top: 9px;
+}
+
+.welcome-continue a, .election-continue a {
+  border: 1px solid #bf6f2f;
+  background-color: #bf6f2f;
+}
+
+.main-menu, .elders-menu {
+  font-weight: bold;
+}
+
+.main-menu .menu-option {
+  border: 2px solid white;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  width: 45%;
+  margin: 6px 2%;
+  float: left;
+  background: #444f44;
+}
+
+.elders-menu .menu-option {
+  border: 2px solid white;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  width: 72%;
+  margin: 10px 14%;
+  text-align: center;
+  background: #444f44;
+}
+
+.menu-option a {
+  text-decoration: none;
+}
+
+.menu-option.not-yet {
+  text-decoration: none;
+  color: #bbb;
+}
+
+.quests, .land {
+  background-color: #24170e;
+}
+
+.quests .quest-experience, .quests .quest-money,
+.quests .quest-required_energy, .quests .quest-required_stuff,
+.quests .quest-payout,
+.land .land-cost, .land .land-action-cost, .land .land-payout,
+.land .land-required_level, .land-soon .land-action-cost {
+  color: #bf6f2f;
+}
+
+.quests .quest-required_stuff.missing {
+  color: #a41c43;
+}
+
+.quests .quest-loot {
+  color: #d4c41c;
+}
+
+.quests .quest-payout.negative,
+.land .land-payout.negative, .land-soon .land-payout.negative {
+  color: #a41c43;
+}
+
+.quests .quest-description, .land .land-description {
+  color: #cbb;
+}
+
+.quests-soon .quest-experience, .quests-soon .quest-money,
+.quests-soon .quest-required_energy,
+.land-soon .land-cost, .land-soon .land-payout,
+.land-soon .land-required_level {
+  color: #442211;
+}
+
+.quests-soon a, .quests-soon a:link, .quests-soon a:visited,
+.quests-soon a:hover, .quests-soon a:active,
+.land-soon a, .land-soon a:link, .land-soon a:visited,
+.land-soon a:hover, .land-soon a:active {
+    color: #442211;
+}
+
+.quest-succeeded, .election-succeeded, .land-succeeded {
+  color: #bf6f2f;
+}
+
+.quest-failed, .election-failed, .land-failed {
+  color: #a41c43;
+}
+
+.quest-do-again, .land-buy-again {
+  text-align: right;
+  margin-right: 8px;
+  margin-bottom: 28px;
+  padding-top: 3px;
+}
+
+.quest-do-again-inside, .land-buy-again-inside {
+  padding: 3px;
+  background-color: #bf6f2f;
+  border: 1px solid #bf6f2f;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  float: right;
+}
+
+.quest-do-again a, .land-buy-again a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.quests .quest-name.loot {
+  color: #d4c41c;
+}
+
+.land .land-owned {
+  color: #fff;
+}
+
+.level-up {
+  border: 1px solid #442211;
+  background-color: #442211;
+}
+
+.choose-clan-name {
+  margin-left: 6px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #bf6f2f;
+}
+
+.choose-clan-name a {
+  text-decoration: none;
+}
+
+.choose-clan-slogan {
+  margin: 0px 0px 8px 54px;
+  font-style: italic;
+  font-size: 11px;
+  color: #bcb;
+}
+
+.help .subtitle {
+  margin: 8px 0 4px;
+}
+
+.help .subtitle {
+  color: #bf6f2f;
+}
+
+.wise_old_man_large {
+  background-image: url('/sites/default/files/images/celestial_glory_lehi_large.png');
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+  width: 106px;
+  height: 144px;
+  float: left;
+}
+
+.wise_old_man_small {
+  background-image: url('/sites/default/files/images/celestial_glory_lehi_small.png');
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+  width: 65px;
+  height: 80px;
+  float: left;
+}
+
+.username-error {
+  color: #a41c43;
+}
+
+.elections-header {
+  color: #daa443;
+}
+
+.elections .election-details .action, .land .land-buy-button,
+.land .land-sell-button, .land .land-perform-button,
+.send-message-send-wrapper .send-message-send,
+.quests .quests-perform-button {
+  padding: 3px 12px;
+  background-color: #693318;
+  border: 1px solid #693318;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+}
+
+.send-message .block-user {
+  padding: 3px 12px;
+  background-color: #693318;
+  border: 1px solid #693318;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+}
+
+.send-message .block-user a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.elections .election-details .action.not-yet, .land .land-buy-button.not-yet,
+.land .land-sell-button.not-yet {
+  background-color: #333833;
+  border: 1px solid #333833;
+}
+
+.elections .election-details .action a, .land .land-buy-button a,
+.land .land-sell-button a, .land form input.land-buy-button {
+  color: #fff;
+  text-decoration: none;
+}
+
+.try-an-election {
+  background-color: #693318 !important;
+  border: 1px solid #693318 !important;
+}
+
+.try-an-election.not-yet {
+  background-color: #333833 !important;
+  border: 1px solid #333833 !important;
+}
+
+.news .message-body {
+  border: 1px solid #45331f !important;
+  background-color: #45331f !important;
+}
+
+.news .button, .news button {
+  background-color: #442211 !important;
+  border: 1px solid #442211 !important;
+}
+
+.news .button.active, .news button.active {
+  background-color: #693318 !important;
+  border: 1px solid #fff !important;
+}
+
+.news .message-reply {
+  background-color: #693318 !important;
+  border: 1px solid #693318 !important;
+}
+
+.news .message-reply.not-yet {
+  background-color: #bbb !important;
+  border: 1px solid #bbb !important;
+  color: black;
+}
+
+.user-profile .action {
+  background-color: #693318 !important;
+  border: 1px solid #693318 !important;
+}
+
+.user-profile .action.not-yet {
+  background-color: #333833 !important;
+  border: 1px solid #333833 !important;
+}
+
+.user-profile .event-status {
+  color: #b33;
+}
+
+.highlighted {
+  color: #693318;
+  font-weight: bold;
+}
+
+.event-info .subtitle {
+  color: #c33;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.event-info .subsubtitle {
+  color: #aaa;
+}
+
+a.version {
+  color: #aa6;
+  text-decoration: none;
+}
+
+
+.new-main-menu .elections-menu {
+  position: absolute;
+  top: 97px;
+  left: 53px;
+  text-decoration: none;
+  color: rgba(255, 255, 170, 0.7);
+  font-size: 15px;
+  font-family: Georgia, "times new roman", serif;
+  font-style: italic;
+  font-weight: bold;
+  text-shadow: 0 0 8px yellow;
+}
+
+.competency-pip {
+  border-right: solid 2px #693318 !important;
+}
+
+.competency-pip.attained {
+  border-right: solid 2px yellow !important;
+}
+
+.too-soon {
+  color: rgba(255, 255, 70, 0.7);
+}

@@ -1,0 +1,2209 @@
+<?php
+
+/**
+ * @file
+ * This is the module for USL2.
+ */
+
+
+function usl2_help($path, $arg) {
+
+  $output = '';
+
+  switch ($path) {
+
+    case 'admin/help#stlouis':
+      $output = '<p>' . t('Back end for <em>Uprising: St. Louis 2</em> game')
+      . '</p>';
+      break;
+
+  }
+
+  return $output;
+
+} // stlouis_help()
+
+
+function usl2_perm() {
+
+  return array('access usl2 content');
+
+} // stlouis_perm()
+
+
+require_once(drupal_get_path('module', 'stlouis') . '/menu.inc');
+require_once(drupal_get_path('module', 'stlouis') . '/functions.inc');
+
+/*
+function usl2_cron() {
+
+  db_set_active('game_usl2');
+
+// save old approval ratings
+
+  $sql = 'update elected_officials set approval_45 = approval_30,
+    approval_30 = approval_15, approval_15 = approval_rating;';
+  $result = db_query($sql);
+
+// move all elected officials toward a 60% approval rating
+
+  $sql = 'update elected_officials set approval_rating = 60
+    where (approval_rating >= 59.75 AND approval_rating <= 60.25);';
+  $result = db_query($sql);
+
+  $sql = 'update elected_officials
+    set approval_rating = approval_rating + 0.25
+    where approval_rating <= 59.75;';
+  $result = db_query($sql);
+
+  $sql = 'update elected_officials
+    set approval_rating = approval_rating - 0.25
+    where approval_rating >= 60.25;';
+  $result = db_query($sql);
+
+  $sql = 'update elected_officials
+    set approval_rating = 0 where approval_rating < 0;';
+  $result = db_query($sql);
+
+  $sql = 'update elected_officials
+    set approval_rating = 100 where approval_rating > 100;';
+  $result = db_query($sql);
+
+
+//   if (date('H') < 9) { // < 9AM -- 10 carolers every 15 mins
+//     $carolers_wanted = 20;
+//   } elseif (date('H') < 17) { // < 5PM -- 25 carolers
+//     $carolers_wanted = 35;
+//   } else { // >= 5PM -- 50 carolers
+//     $carolers_wanted = 55;
+//   }
+
+// enjoy caroling?
+//   $sql = 'update neighborhoods
+//     set special_int = %d where special_int >= 0;';
+//   $result = db_query($sql, $carolers_wanted);
+
+// the grinch!
+//   $sql = 'update neighborhoods
+//     set special_int = -50
+//     where special_int > 0 and xcoor > 0
+//     order by rand()
+//     limit 20;';
+//   $result = db_query($sql);
+
+
+// zombies!
+  $sql = 'select count(id) as count from users
+    where meta = "zombie";';
+  $result = db_query($sql);
+  $item = db_fetch_object($result);
+  $zombie_count = $item->count;
+
+  if ($zombie_count > 0) {
+
+//     mail('joseph@cheek.com', "$zombie_count zombies", 'fyi');
+
+// move them, enhance experience
+    $sql = 'update users set experience = floor(rand() * 1500000) + 1
+      where meta = "zombie" order by rand() limit %d;';
+    $result = db_query($sql, ceil($zombie_count / 10));
+
+    $sql = 'update users set experience = floor(rand() * 250000) + 1
+      where meta = "zombie" order by rand() limit %d;';
+    $result = db_query($sql, ceil($zombie_count / 10));
+
+    $sql = 'update users set fkey_neighborhoods_id = floor(rand() * 85) + 1,
+      experience = experience + 10000
+      where meta = "zombie" and fkey_neighborhoods_id = 81;';
+    $result = db_query($sql);
+
+    $sql = 'update users set fkey_neighborhoods_id = floor(rand() * 85) + 1,
+      experience = experience + 1000
+      where meta = "zombie" order by rand() limit %d;';
+    $result = db_query($sql, ceil($zombie_count / 10));
+
+    $sql = 'select * from levels;';
+    $result = db_query($sql);
+    $levels = array();
+    while ($level = db_fetch_object($result)) $levels[] = $level;
+
+    for ($a = 0; $a < count($levels) - 1 ; $a++) {
+
+      $sql = 'update users set level = %d, elocution = %d
+        where experience >= %d and experience < %d
+        and meta = "zombie";';
+      $result = db_query($sql, $a + 1, $a * 2 + 2, $levels[$a]->experience,
+        $levels[$a + 1]->experience - 1);
+    }
+
+  } // any zombies?
+
+
+// unfreeze players
+
+    $sql = 'update users set meta = "" where meta = "frozen";';
+    $result = db_query($sql);
+
+// move all hoods toward a 50 beauty rating
+
+// winter
+//   $sql = 'update neighborhoods set rating = 50
+//     where (rating >= 49.9 AND rating <= 50.1);';
+//   $result = db_query($sql);
+
+//   $sql = 'update neighborhoods
+//     set rating = rating + 0.1
+//     where rating < 49.9;';
+//   $result = db_query($sql);
+
+//   $sql = 'update neighborhoods
+//     set rating = rating - 0.1
+//     where rating > 50.1;';
+//   $result = db_query($sql);
+
+// spring/fall
+  $sql = 'update neighborhoods set rating = 100
+    where (rating >= 99.75 AND rating <= 100.25);';
+  $result = db_query($sql);
+
+  $sql = 'update neighborhoods
+    set rating = rating + 0.25
+    where rating < 99.75;';
+  $result = db_query($sql);
+
+  $sql = 'update neighborhoods
+    set rating = rating - 0.25
+    where rating > 100.25;';
+  $result = db_query($sql);
+
+
+// no alder?  reset one hood to base
+//   $sql = 'SELECT id
+//     FROM neighborhoods
+//     WHERE id NOT IN (
+//
+//       SELECT neighborhoods.id
+//       FROM neighborhoods
+//       RIGHT JOIN users ON users.fkey_neighborhoods_id = neighborhoods.id
+//       JOIN elected_officials ON elected_officials.fkey_users_id = users.id
+//       AND elected_officials.fkey_elected_positions_id = 1
+//     )
+//
+//     ORDER BY RAND()
+//     LIMIT 1;';
+//   $result = db_query($sql);
+//   $item = db_fetch_object($result);
+//
+//   $sql = 'update neighborhoods set rating = 50, residents = 10,
+//     welcome_msg = "Unmaintained and unloved, this neighborhood has atrophied."
+//     where id = %d;';
+//   $result = db_query($sql, $item->id);
+
+
+  $addition = 0; // winter
+  $addition = 10; // spring / fall
+
+// give hoods residents to match - each rating / 5 plus $addition
+  $sql = 'UPDATE `neighborhoods` SET residents = residents + 1
+    WHERE floor(rating / 5) > (residents - %d) AND rand() > 0.9';
+  $result = db_query($sql, $addition);
+
+  $sql = 'UPDATE `neighborhoods` SET residents = residents - 1
+    WHERE floor(rating / 5) < (residents - %d) AND rand() > 0.9';
+  $result = db_query($sql, $addition);
+
+// april fools -- move 100 people at random
+//   $sql = 'select users.id from users
+//     left join elected_officials on users.id = elected_officials.fkey_users_id
+//     where elected_officials.id IS NULL
+//     and users.level >= 25
+//     order by rand()
+//     limit 100;';
+//   $result = db_query($sql);
+//   $data = array();
+//   while ($item = db_fetch_object($result)) $data[] = $item;
+//
+//   foreach ($data as $item) {
+//
+//     $sql = 'select id from neighborhoods where xcoor > 0 and ycoor > 0
+//       order by rand() limit 1;';
+//     $result = db_query($sql);
+//     $hood = db_fetch_object($result);
+//
+//     $sql = 'update users set fkey_neighborhoods_id = %d
+//       where id = %d;';
+//     $result = db_query($sql, $hood->id, $item->id);
+//
+//   }
+
+
+// unfinished favors
+  $sql = 'select favor_requests.*, favors.values_cost from favor_requests
+    left join favors on favor_requests.fkey_favors_id = favors.id
+    where time_due < CURRENT_TIMESTAMP
+    and time_completed = 0
+    ;';
+  $result = db_query($sql);
+  $data = array();
+  while ($item = db_fetch_object($result)) $data[] = $item;
+
+  foreach ($data as $item) {
+
+// notify initiator
+    $cost = (int) $item->values_cost;
+    $bounty = mt_rand($cost / 2, $cost * 5);
+    $message = ($item->success_expected == 'y') ?
+      "I was unable to complete your favor on time.&nbsp; Neither of us get
+        the $bounty credit bounty." :
+      "I was unable to complete your favor on time.&nbsp; You receive the full
+        $bounty credit bounty.";
+
+    $sql = 'insert into challenge_messages
+      (fkey_users_from_id, fkey_users_to_id, message)
+      values (%d, %d, "%s");';
+    $result = db_query($sql, $item->fkey_users_to_id, $item->fkey_users_from_id,
+      $message);
+
+// delete favor
+    $sql = 'delete from favor_requests
+      where id = %d;';
+    $result = db_query($sql, $item->id);
+
+// increment user stats
+    $sql = 'update users
+      set favors_asked_noncompleted = favors_asked_noncompleted + 1,
+      money = money + %d
+      where id = %d;';
+    $result = db_query($sql, ($item->success_expected == 'n') ? $bounty : 0,
+      $item->fkey_users_from_id);
+
+    $sql = 'update users
+      set favors_noncompleted = favors_noncompleted + 1
+      where id = %d;';
+    $result = db_query($sql, $item->fkey_users_to_id);
+
+  } // each overdue favor
+
+
+// update maps
+
+  $map_large =
+    imagecreatefrompng('sites/default/files/images/stlouis_map_large.png');
+  $map_large_overlay = imagecreatefrompng(
+    'sites/default/files/images/stlouis_map_large_overlay.png'
+  );
+
+  $sql = 'select id from neighborhoods
+    where is_habitable = 1;';
+  $result = db_query($sql);
+  while ($item = db_fetch_object($result)) $hoods[] = $item;
+// firep($hoods, 'hoods');
+
+  $sql = 'SELECT party_icon, xcoor, ycoor, users.id
+    FROM `users`
+
+    LEFT JOIN `values` ON users.fkey_values_id = `values`.id
+
+    LEFT OUTER JOIN elected_officials
+    ON elected_officials.fkey_users_id = users.id
+
+    LEFT OUTER JOIN elected_positions
+    ON elected_positions.id = elected_officials.fkey_elected_positions_id
+
+    LEFT OUTER JOIN neighborhoods
+    ON users.fkey_neighborhoods_id = neighborhoods.id
+    WHERE users.fkey_neighborhoods_id = %d
+
+    ORDER by elected_positions.id DESC, users.experience DESC
+    LIMIT 1;';
+
+// check each hood -- wish i could figure out w/o a loop
+  $data = array();
+  foreach ($hoods as $hood) {
+    $result = db_query($sql, $hood->id);
+    $data[] = db_fetch_object($result);
+  }
+
+  foreach ($data as $item) {
+
+// Fill w/ icon
+    $icon = imagecreatefrompng('sites/default/files/images/stlouis_clan_' .
+      $item->party_icon . '.png');
+    imagecopy($map_large, $icon, $item->xcoor - 18, $item->ycoor - 18, 0, 0,
+      imagesx($icon), imagesy($icon));
+    imagedestroy($icon);
+//
+
+// old method -- fill w/o color
+//     imagefill($map_large, $item->xcoor, $item->ycoor,
+//       imagecolorallocate($map_large,
+//       hexdec(substr($item->color, 0, 2)),
+//       hexdec(substr($item->color, 2, 2)),
+//       hexdec(substr($item->color, 4, 2))));
+
+// st patrick's day
+//     imagefill($map_large, $item->xcoor, $item->ycoor,
+//       imagecolorallocate($map_large, 32, 224, 32));
+
+
+  }
+
+  imagecopy($map_large, $map_large_overlay, 0, 0, 0, 0,
+    imagesx($map_large_overlay), imagesy($map_large_overlay));
+
+  $map_mid = imagecreatetruecolor(690, 720);
+  $map_top = imagecreatetruecolor(690, 720);
+  $map_bottom = imagecreatetruecolor(690, 720);
+  $map_large_mid = imagecreatetruecolor(imagesx($map_large),
+    imagesy($map_large) - 600);
+  $map_large_bottom = imagecreatetruecolor(imagesx($map_large), 600);
+
+  imagecopy($map_mid, $map_large, 0, 0, 54, 488, 690, 720);
+  imagecopy($map_top, $map_large, 0, 0, 100, 0, 690, 720);
+  imagecopy($map_bottom, $map_large, 0, 0, 0, 900, 690, 720);
+
+// slice map_large
+  imagecopy($map_large_mid, $map_large, 0, 0, 0, 0, imagesx($map_large),
+    imagesy($map_large) - 600);
+  imagecopy($map_large_bottom, $map_large, 0, 0, 0, imagesy($map_large) - 600,
+    imagesx($map_large), 600);
+
+  imagejpeg($map_large_mid,
+    "sites/default/files/images/stlouis_map_large_colored.jpg");
+  imagejpeg($map_large_bottom,
+    "sites/default/files/images/stlouis_map_large_bottom_colored.jpg");
+  imagejpeg($map_mid,
+    "sites/default/files/images/stlouis_map_mid.jpg", 85);
+  imagejpeg($map_top,
+    "sites/default/files/images/stlouis_map_top.jpg", 85);
+  imagejpeg($map_bottom,
+    "sites/default/files/images/stlouis_map_bottom.jpg", 85);
+
+  imagedestroy($map_large);
+  imagedestroy($map_large_overlay);
+  imagedestroy($map_mid);
+  imagedestroy($map_top);
+  imagedestroy($map_bottom);
+
+// flag day -- give luck to those with flags
+//   unset($data);
+//   $sql = 'select * from equipment_ownership where fkey_equipment_id = 23;';
+//   $result = db_query($sql);
+//   while ($item = db_fetch_object($result)) $data[] = $item;
+//
+//   foreach ($data as $item) {
+//
+//     $sql = 'update users set luck = luck + 1 where id = %d;';
+//     $result = db_query($sql, $item->fkey_users_id);
+//
+//     $sql = 'insert into user_messages set fkey_users_from_id = 177,
+//       fkey_users_to_id = %d, message = "Old Glory gives you 1 Luck!";';
+//     $result = db_query($sql, $item->fkey_users_id);
+//
+//   }
+
+
+// prune old log files
+  $sql = 'delete from challenge_messages where timestamp < "%s"
+    limit 10000;';
+  $result = db_query($sql, date('Y-m-d H:i:s', time() - 400000));
+// a little over a month
+
+  db_set_active('default');
+
+}
+*/
+
+function usl2_init() {
+
+  global $conf;
+
+  if (arg(0) == 'usl2') {
+    $conf['cache'] = FALSE; // don't cache anything
+  }
+
+} // stlouis_init()
+
+/**
+ * Filter profanity.
+ *
+ * @todo: move to own file.
+ */
+function _usl2_filter_profanity($message) {
+
+  $profanity = array(
+	'4r5e',
+	'5h1t',
+	'5hit',
+	'a_s_s',
+	'a55',
+	'anal',
+	'anus',
+	'ar5e',
+	'arrse',
+	'arse',
+	'a§§',
+	'ass',
+	'asses',
+	'assfucker',
+	'ass-fucker',
+	'assfukka',
+	'asshole',
+	'assholes',
+	'asskisser',
+	'asswhole',
+	'asswipe',
+        'asz',
+        'azz',
+	'beotch',
+	'b!tch',
+	'b00bs',
+	'b17ch',
+	'b1tch',
+	'ballbag',
+	'ballsack',
+	'bastard',
+	'beastial',
+	'beastiality',
+	'beastility',
+	'beaver',
+	'bellend',
+	'belly whacker',
+	'bestial',
+	'bestiality',
+	'beotch',
+	'b!tch',
+	'bytch',
+	'bi+ch',
+	'biatch',
+	'bitch',
+	'bitcher',
+	'bitchers',
+	'bitches',
+	'bitchin',
+	'bitching',
+	'bloody',
+	'blow job',
+	'blowjob',
+	'blowjobs',
+	'boiolas',
+	'bollock',
+	'bollok',
+	'bonehead',
+	'boner',
+	'boob',
+	'boobs',
+	'booobs',
+	'boooobs',
+	'booooobs',
+	'booooooobs',
+	'browntown',
+	'btch',
+	'buceta',
+	'bucket cunt',
+//	'bugger',
+	'bullshit',
+	'bung hole',
+	'butch',
+	'butt breath',
+	'butt hair',
+	'buttface',
+	'buttfuck',
+	'buttfucker',
+	'butthead',
+	'butthole',
+	'buttmuch',
+	'buttpicker',
+	'buttplug',
+	'c0ck',
+	'c0cksucker',
+	'carpet muncher',
+	'cawk',
+	'chink',
+	'cipa',
+	'circle jerk',
+	'cl1t',
+	'clam',
+	'clit',
+	'clitoris',
+	'clits',
+	'cnut',
+	'cobia',
+	'cock',
+	'cockface',
+	'cockhead',
+	'cockmunch',
+	'cockmuncher',
+	'cocks',
+	'cocksuck',
+	'cocksucked',
+	'cocksucker',
+	'cock-sucker',
+	'cocksucking',
+	'cocksucks',
+	'cocksuka',
+	'cok',
+	'cokmuncher',
+	'coksucka',
+	'coon',
+	'cooter',
+	'cox',
+	'crap',
+	'cum',
+	'cummer',
+	'cumming',
+	'cums',
+	'cumshot',
+	'cunilingus',
+	'cunillingus',
+	'cunnilingus',
+	'cunnilingus',
+	'cunt',
+	'cuntlick',
+	'cuntlicker',
+	'cuntlicking',
+	'cunts',
+	'cyalis',
+	'cyberfuc',
+	'cyberfuck',
+	'cyberfucked',
+	'cyberfucker',
+	'cyberfuckers',
+	'cyberfucking',
+	'dammit',
+	'd1ck',
+	'damn',
+	'damn',
+	'dick',
+	'dickhead',
+	'dickk',
+	'dike',
+	'dildo',
+	'dildos',
+	'dink',
+	'dinks',
+	'dipshit',
+	'dirsa',
+	'dlck',
+	'dog-fucker',
+	'doggin',
+	'dogging',
+	'dong',
+	'donkeyribber',
+	'doosh',
+	'douche bag',
+	'duche',
+	'dumbass',
+	'dumbfuck',
+	'dyke',
+	'dyke',
+	'ejaculate',
+	'ejaculated',
+	'ejaculates',
+	'ejaculating',
+	'ejaculatings',
+	'ejaculation',
+	'ejakulate',
+	'fuc k',
+	'fu c k',
+	'fukin',
+	'fck',
+	'fvk',
+	'f u c k',
+	'f u c k e r',
+	'f_u_c_k',
+	'f4nny',
+	'fag',
+	'fagget',
+	'fagging',
+	'faggit',
+	'faggitt',
+	'faggot',
+	'faggs',
+	'fagot',
+	'fagot',
+	'fagots',
+	'fags',
+	'fanny',
+	'fannyflaps',
+	'fannyfucker',
+	'fanyy',
+	'fart',
+	'farted',
+	'farting',
+	'fartings',
+	'farts',
+	'farty',
+	'fatass',
+	'fatso',
+	'fcuk',
+	'fcuker',
+	'fcuking',
+	'feck',
+	'fecker',
+	'felatio',
+	'felching',
+	'fellate',
+	'fellatio',
+	'fellatio',
+	'fingerfuck',
+	'fingerfucked',
+	'fingerfucker',
+	'fingerfuckers',
+	'fingerfucking',
+	'fingerfucks',
+	'fistfuck',
+	'fistfucked',
+	'fistfucker',
+	'fistfuckers',
+	'fistfucking',
+	'fistfuckings',
+	'fistfucks',
+	'flange',
+	'fook',
+	'fooker',
+	'fuck',
+	'fucka',
+	'fucked',
+	'fucker',
+	'fuckers',
+	'fuckers',
+	'fuckhead',
+	'fuckheads',
+	'fuckin',
+	'fucking',
+	'fuckings',
+	'fuckingshitmotherfucker',
+	'fuckme',
+	'fuckr',
+	'fucks',
+	'fuckwhit',
+	'fuckwit',
+	'fudge packer',
+	'fudgepacker',
+	'fuggin',
+	'fuk',
+	'fuker',
+	'fukker',
+	'fukkin',
+	'fuks',
+	'fukwhit',
+	'fukwit',
+	'furburger',
+	'fux',
+	'fux0r',
+	'fvck',
+	'gangbang',
+	'gangbanged',
+	'gangbangs',
+	'gaylord',
+	'gaysex',
+	'gaysex',
+	'gazongers',
+	'goatse',
+	'god-dam',
+	'g--dam',
+	'goddamn',
+	'goddamn',
+	'goddamned',
+	'god-damned',
+	'gonads',
+	'gook',
+	'guinne',
+	'hard on',
+	'hardcoresex',
+	'hell',
+	'heshe',
+	'hoar',
+	'hoare',
+	'hoer',
+	'homo',
+	'hooker',
+	'hore',
+	'horniest',
+	'horny',
+	'hotsex',
+	'hussy',
+	'lmao',
+	'lmfao',
+	'jack off',
+	'jackass',
+	'jacking off',
+	'jackoff',
+	'jack-off',
+	'jerk-off',
+	'jism',
+	'jiz',
+	'jiz',
+	'jizm',
+	'jizz',
+	'kawk',
+	'kike',
+	'knobead',
+	'knobed',
+	'knobend',
+	'knobhead',
+	'knobjocky',
+	'knobjokey',
+	'kock',
+	'kondum',
+	'kondums',
+	'kum',
+	'kummer',
+	'kumming',
+	'kums',
+	'kunilingus',
+	'kunilingus',
+	'l3i+ch',
+	'l3itch',
+	'labia',
+	'lesbian',
+	'lesbo',
+	'm0f0',
+	'm0fo',
+	'm45terbate',
+	'ma5terb8',
+	'ma5terbate',
+	'masterb8',
+	'masterbat*',
+	'masterbat3',
+	'masterbate',
+	'master-bate',
+	'masterbation',
+	'masterbations',
+	'masturbate',
+	'mof0',
+	'mofo',
+	'mo-fo',
+	'mothafuck',
+	'mothafucka',
+	'mothafuckas',
+	'mothafuckaz',
+	'mothafucked',
+	'mothafucker',
+	'mothafuckers',
+	'mothafuckin',
+	'mothafucking',
+	'mothafuckings',
+	'mothafucks',
+	'mother fucker',
+	'motherfuck',
+	'motherfuck',
+	'motherfucked',
+	'motherfucker',
+	'motherfuckers',
+	'motherfuckin',
+	'motherfuckin',
+	'motherfucking',
+	'motherfuckings',
+	'motherfuckka',
+	'motherfucks',
+	'muff',
+	'mutha',
+	'muthafecker',
+	'muthafuckker',
+	'muther',
+	'mutherfucker',
+	'n1gga',
+	'n1gger',
+	'nazi',
+	'nigg3r',
+	'nigg4h',
+	'nigga',
+	'niggah',
+	'niggas',
+	'niggaz',
+	'nigger',
+	'niggers',
+	'nobhead',
+	'nobjocky',
+	'nobjokey',
+	'numbnuts',
+	'nutsack',
+	'orgasim',
+	'orgasims',
+	'orgasm',
+	'orgasms',
+	'p0rn',
+	'pawn',
+	'pecker',
+	'penis',
+	'penisfucker',
+	'phonesex',
+	'phuck',
+	'phuk',
+	'phuked',
+	'phuking',
+	'phuking',
+	'phukked',
+	'phukking',
+	'phuks',
+	'phuks',
+	'phuq',
+	'phuq',
+	'pigfucker',
+	'pimp',
+	'pimpis',
+	'piss',
+	'pissed',
+	'pisser',
+	'pissers',
+	'pisses',
+	'pissflaps',
+	'pissin',
+	'pissing',
+	'pissoff',
+	'pissrr',
+	'poop',
+	'porn',
+	'porno',
+	'pornography',
+	'pornos',
+	'pron',
+	'pube',
+	'pusse',
+	'pussi',
+	'pussies',
+	'pussies',
+	'pussy',
+	'pussys',
+	'queer',
+	'rectum',
+	'retard',
+	'rimjaw',
+	'rimming',
+	'rape',
+	'shlt',
+	'sh!t',
+	'sh!ts',
+	'slut',
+	's hit',
+	's.o.b.',
+	's_h_i_t',
+	'sadist',
+	'schlong',
+	'screw',
+	'screwing',
+	'scroat',
+	'scrote',
+	'scrotum',
+	'semen',
+	'sex',
+	'sh!+',
+	'sh!t',
+	'sh1t',
+	'shag',
+	'shagger',
+	'shaggin',
+	'shagging',
+	'sheister',
+	'shemale',
+	'shi+',
+	'shit',
+	'sh!t',
+	'shitdick',
+	'shite',
+	'shited',
+	'shited',
+	'shitey',
+	'shitfuck',
+	'shitfull',
+	'shitfull',
+	'shithead',
+	'shiting',
+	'shitings',
+	'shits',
+	'shits',
+	'shitted',
+	'shitter',
+	'shitters',
+	'shitting',
+	'shittings',
+	'shitty',
+	'shitty',
+	'shiz',
+	'sht',
+	'shttim',
+	'skank',
+	'slag',
+	'sleaze',
+	'slut',
+	'slut',
+	'sluts',
+	'smartass',
+	'smegma',
+	'smut',
+	'snatch',
+	'son-of-a-bitch',
+	'spac',
+	'spunk',
+	'stupidass',
+	't1tt1e5',
+	't1tties',
+	'teets',
+	'teez',
+	'testical',
+	'testicle',
+	'tit',
+	'titfuck',
+	'tits',
+	'titt',
+	'tittie5',
+	'tittiefucker',
+	'titties',
+	'tittyfuck',
+	'tittywank',
+	'titwank',
+	'tosser',
+	'turd',
+	'tw4t',
+	'twat',
+	'twathead',
+	'twatty',
+	'twunt',
+	'twunter',
+	'tampon',
+	'v14gra',
+	'v1gra',
+	'vagina',
+	'viagra',
+	'vulva',
+	'w00se',
+	'wang',
+	'wank',
+	'wanker',
+	'wanky',
+	'wetback',
+	'whoar',
+	'whore',
+	);
+
+  $msg = str_replace(
+    array('@', '$', "'", '.', '&#039;', '&quot;'),
+    array('a', 's', ' ', ' ', ' ', ' '),
+    $message);
+
+  setlocale(LC_ALL, 'en_US');
+  $msg = preg_replace('/[^A-Za-z0-9 ]/', '',
+    iconv('utf-8', 'ascii//TRANSLIT', $msg));
+
+  foreach ($profanity as $word) {
+    $pattern = "/\b$word\b/i"; // Check word boundaries, ignoring case
+
+    if (preg_match($pattern, $msg) == 1) return "XXX: found $word XXX";
+
+  }
+
+  return $message;
+
+}
+
+function _usl2_format_date($epoch) {
+
+  $time_diff = time() - $epoch;
+// firep("time difference: $time_diff");
+
+  if ($time_diff < 0) { // in the future?
+
+    if ($time_diff > -10) {
+      return t('A few seconds from now');
+    } else if ($time_diff > -60) {
+      return t('@time seconds', array('@time' => abs($time_diff)));
+    } else if ($time_diff > -120) {
+      return t('1 minute from now');
+    } else if ($time_diff > -3600) {
+      return t('@time minutes from now',
+        array('@time' => abs(floor($time_diff / 60))));
+    } else if ($time_diff > -7200) {
+      return t('1 hour from now');
+    } else if ($time_diff > -86400) {
+      return t('@time hours from now',
+        array('@time' => abs(floor($time_diff / 3600))));
+    } else if ($time_diff > -172800) {
+      return t('A day from now');
+    } else if ($time_diff > -1728000) {
+      return t('@time days from now',
+        array('@time' => abs(floor($time_diff / 86400))));
+    } else {
+      return date('d M Y', $epoch);
+    }
+
+  } // in the future
+
+  if ($time_diff == 0) {
+    return t('Now!');
+  } else if ($time_diff < 10) {
+    return t('A few seconds ago');
+  } else if ($time_diff < 60) {
+    return t('@time seconds ago', array('@time' => $time_diff));
+  } else if ($time_diff < 120) {
+    return t('1 minute ago');
+  } else if ($time_diff < 3600) {
+    return t('@time minutes ago', array('@time' => floor($time_diff / 60)));
+  } else if ($time_diff < 7200) {
+    return t('1 hour ago');
+  } else if ($time_diff < 86400) {
+    return t('@time hours ago', array('@time' => floor($time_diff / 3600)));
+  } else if ($time_diff < 172800) {
+    return t('A day ago');
+  } else if ($time_diff < 1728000) {
+    return t('@time days ago', array('@time' => floor($time_diff / 86400)));
+  } else {
+    return date('d M Y', $epoch);
+  }
+
+}
+
+function _usl2_ordinal($number) {
+// lifted from http://php.net/manual/en/function.number-format.php
+
+  if ( ($num / 10) % 10 != 1 ) { // Special case "teenth"
+
+    switch( $num % 10 ) { // Handle 1st, 2nd, 3rd
+
+      case 1: return $num . 'st';
+      case 2: return $num . 'nd';
+      case 3: return $num . 'rd';
+
+    }
+
+  }
+
+// Everything else is "nth"
+  return $num . 'th';
+
+}
+
+/**
+ * Save user agent.
+ */
+function _usl2_save_user_agent($game_user) {
+
+  global $purchasing_luck, $user;
+
+  // Loading luck doesn't count.
+  if ($purchasing_luck) {
+    return;
+  }
+
+//  if ($user->roles[4] == 'web game access') return; // admin access
+
+  $user_agent = $_SERVER['HTTP_USER_AGENT'];
+  $last_agent = _usl2_get_value($game_user->id, 'user_agent');
+
+  // Same user agent?  That's fine.
+  if ($last_agent == $user_agent) {
+    return;
+  }
+
+  // New user agent?  Save it and return.
+  if (empty($last_agent)) { // no entry?  create one!
+    _usl2_set_value($game_user->id, 'user_agent', $user_agent);
+    return;
+  }
+
+  // Different user agent but user has no password?  Save user agent and return.
+  if (empty($game_user->password)) {
+    _usl2_set_value($game_user->id, 'user_agent', $user_agent);
+    return;
+  }
+
+  // Different user agent and user has a password -- gotta authenticate!
+  $game = check_plain(arg(0));
+  $arg2 = check_plain(arg(2));
+  db_set_active('default');
+  drupal_goto($game . '/authenticate/' . $arg2);
+
+}
+
+/**
+ * Save IP address.
+ */
+function _usl2_save_user_IP($game_user) {
+
+  global $purchasing_luck, $user;
+
+  // Loading luck doesn't count.
+  if ($purchasing_luck) {
+    return;
+  }
+
+//  if ($user->roles[4] == 'web game access') return; // admin access
+
+  $ip_addr = ip_address();
+  $last_ip = _usl2_get_value($game_user->id, 'ip_address');
+
+  // Same IP address?  That's fine.
+  if ($last_ip == $ip_addr) {
+    return;
+  }
+
+  // New IP address?  Save it and return.
+  if (empty($last_ip)) { // no entry?  create one!
+    _usl2_set_value($game_user->id, 'ip_address', $ip_addr);
+    return;
+  }
+
+  // Different IP address but user has no password?  Save IP address and return.
+  if (empty($game_user->password)) {
+    _usl2_set_value($game_user->id, 'ip_address', $ip_addr);
+    return;
+  }
+
+  // Different IP address and user has a password -- gotta authenticate!
+  $game = check_plain(arg(0));
+  $arg2 = check_plain(arg(2));
+  db_set_active('default');
+  drupal_goto($game . '/authenticate/' . $arg2);
+
+}
+
+/**
+ * Get the user's authkey from their user agent.
+ *
+ * @return string
+ *   The authkey
+ */
+function _usl2_get_authKey() {
+
+  $authKey = '';
+
+  if (substr(arg(2), 0, 3) == 'ms=') {
+    $authKey = substr(arg(2), 21);
+  } else { // authkey in user agent
+
+    $agentBits = explode(' ', $_SERVER['HTTP_USER_AGENT']);
+
+    foreach ($agentBits as $agentBit) {
+      if (substr($agentBit, 0, 8) == 'authKey=') {
+        $authKey = substr($agentBit, 8, strlen($agentBit) - 9);
+      }
+    }
+
+  }
+
+  return $authKey;
+}
+
+/**
+ * Save the user's authkey in the database.
+ *
+ * @param StdClass $game_user
+*    Game User object.
+
+ * @param string $authKey
+ *   The authkey.
+ */
+function _usl2_set_authKey(StdClass &$game_user, $authKey) {
+
+  $game_user->authKey = $authKey;
+  $sql = 'UPDATE users set authKey = "%s"
+    WHERE id = %d;';
+  $result = db_query($sql, $authKey, $game_user->id);
+
+}
+
+/**
+ * Check the user's authKey.
+ */
+function _usl2_check_authKey($game_user) {
+
+  global $purchasing_luck, $user;
+
+  // Loading luck doesn't count.
+  if ($purchasing_luck) {
+    return;
+  }
+
+  // Allow bad authkeys on the authentication page.
+  if (arg(1) == 'authenticate') {
+    return;
+  }
+
+  // Web game access doesn't count.
+  if (is_array($user->roles)
+  && in_array('web game access', array_values($user->roles))) {
+    return;
+  }
+
+  // Other conditions for which we don't care about authKeys:
+  if ((substr(arg(2), 0, 3) == 'ai-') // NPC
+  || (arg(2) == 'facebook') // from FB
+  || (_usl2_get_value($game_user->id, 'allow_null_authkey'))) { // per-user override
+    return;
+  }
+
+  $key = _usl2_get_authKey();
+
+  // No authKey and not in our exception list?  Hacking!!!
+  if (empty($key)) {
+    $game = check_plain(arg(0));
+    $arg2 = check_plain(arg(2));
+    db_set_active('default');
+    drupal_goto($game . '/error/' . $arg2 . '/E-0922'); // no authKey -- hacking
+  }
+
+  // Same authKey?  That's fine.
+  if ($key == $game_user->authKey) {
+    return;
+  }
+
+  // New authKey?  Save it and return.
+  if (empty($game_user->authKey)) {
+    _usl2_set_authKey($game_user, $authKey);
+    return;
+  }
+
+  // Different authKey but user has no password?  Needs admin reset.
+  if (empty($game_user->password)) {
+    $game = check_plain(arg(0));
+    $arg2 = check_plain(arg(2));
+    db_set_active('default');
+    drupal_goto($game . '/error/' . $arg2 . '/E-1017'); // different authKey -- needs admin reset
+  }
+
+  // Different authKey and user has a password -- gotta authenticate!
+  $game = check_plain(arg(0));
+  $arg2 = check_plain(arg(2));
+  db_set_active('default');
+  drupal_goto($game . '/authenticate/' . $arg2);
+
+}
+
+/**
+ * Return the value in the db if found, or $default if not found.
+ */
+function _usl2_get_value($fkey_users_id, $key, $default = NULL) {
+
+  $sql = 'SELECT `value` FROM {user_attributes}
+    WHERE `fkey_users_id` = %d AND `key` = "%s";';
+
+  $result = db_fetch_object(db_query($sql, (int)$fkey_users_id, $key));
+
+  return !empty($result->value) ? $result->value : $default;
+}
+
+/**
+ * Set a value in the db; updates it if it already exists.
+ */
+function _usl2_set_value($fkey_users_id, $key, $value = NULL) {
+
+  $sql = 'INSERT INTO {user_attributes}
+    (`fkey_users_id`, `key`, `value`) VALUES (%d, "%s", "%s")
+    ON DUPLICATE KEY UPDATE `value` = "%s", last_update = CURRENT_TIMESTAMP;';
+
+  $result = db_query($sql, $fkey_users_id, $key, $value, $value);
+}
+
+/**
+ * Remove a value in the db.
+ */
+function _usl2_remove_value($fkey_users_id, $key) {
+
+  $sql = 'delete from {user_attributes}
+    where `fkey_users_id` = %d and `key` = "%s";';
+
+  $result = db_query($sql, $fkey_users_id, $key);
+}
+
+/**
+ * Get a user's phone ID.  The phone ID is the user's ID.  Doesn't actually
+ * ask for credentials or check that the phone ID belongs to the user in
+ * question.
+ */
+function _usl2_get_phoneid() {
+
+  if ((substr(arg(2), 0, 3) == 'fb=') || arg(2) == '') {
+    slack_send_message('fix ' . request_uri() . "\n"
+    . 'Referrer is ' . $_SERVER['HTTP_REFERER'], 'usl2-errors');
+    echo 'Uhoh! Bad URL ' . request_uri()
+    . ' from <a href="' . $_SERVER['HTTP_REFERER'] . '">' .
+      $_SERVER['HTTP_REFERER'] . '</a>';
+    db_set_active('default');
+    drupal_exit();
+  }
+
+  if (arg(2) == 'facebook') {
+    return _stlouis_get_fbid();
+  }
+
+  if (arg(2) === 'null') {
+    db_set_active('default');
+    drupal_goto('usl2/playbook_null');
+  }
+
+  if (substr(arg(2), 0, 3) === 'ms=') {
+    return _stlouis_get_msid();
+  }
+
+  return check_plain(arg(2));
+}
+
+function _usl2_get_msid() {
+//   drupal_add_css(drupal_get_path('theme', 'cdc_games') . '/msie.css');
+  return substr(arg(2), 3, 17);
+}
+
+function _usl2_get_fbid() {
+  require_once ('fb/facebook.php');
+
+  // Facebook configuration
+  if (arg(0) == 'usl2') { // @FIXME get app_id and secret for USL2
+
+    $app_id = '234564386596716';
+    $secret = '0b631d36aaba590fe31b2f1b9392aad7';
+    $canvas_page = 'https://apps.facebook.com/uprisingstlouis/';
+
+  }
+
+  // first, try normal facebook getUser().  If that works, awesome.
+  $facebook = new Facebook(array(
+    'appId'  => $app_id,
+    'secret' => $secret,
+    'cookie' => TRUE,
+  ));
+
+//  echo '<pre>'; print_r($_SERVER); echo '</pre>';
+  $signed_request = $_REQUEST['signed_request'];
+//  echo '<pre>'; print_r($signed_request); echo '</pre>';
+
+  // Get User ID
+  $user = $facebook->getUser();
+  if ($user != '0') {
+    return 'fb=' . $user;
+  }
+
+// getUser() didn't work.  Try oAuth.  Maybe user needs to log in or
+// authorize the game?
+
+  $auth_url = 'http://www.facebook.com/dialog/oauth?client_id='
+  . $app_id . '&redirect_uri=' . urlencode($canvas_page);
+  list($encoded_sig, $payload) = explode('.', $signed_request, 2);
+  $data = json_decode(base64_decode(strtr($payload, '-_', '+/')), true);
+
+  if (empty($data['user_id'])) {
+    echo '<a target="_top" href="' . $auth_url . '">Login to Facebook</a>';
+    db_set_active('default');
+    drupal_exit();
+//    echo("<script> top.location.href='" . $auth_url . "'</script>");
+  }
+
+//    echo ("Welcome User: " . $data["user_id"]);
+  return 'fb=' . $data['user_id'];
+}
+
+function _usl2_bump_event_tags_con($id) {
+
+  // Add user entry, if it doesn't exist.
+  $sql = 'select * from event_points where fkey_users_id = %d;';
+  $result = db_query($sql, $id);
+  $row = db_fetch_object($result);
+
+  if (empty($row)) {
+    $sql = 'insert into event_points set fkey_users_id = %d;';
+    $result = db_query($sql, $id);
+    $row->points = $row->tags_con = 0;
+  }
+
+  // Update points.
+  $row->tags_con++;
+  $row->points += min($row->tags_con, 20);
+
+  $sql = 'update event_points set tags_con = %d, points = %d
+    where fkey_users_id = %d;';
+  $result = db_query($sql, $row->tags_con, $row->points, $id);
+
+  return $row;
+}
+
+function _usl2_reset_event_tags_con($id) {
+
+  // Add user entry, if it doesn't exist.
+  $sql = 'select * from event_points where fkey_users_id = %d;';
+  $result = db_query($sql, $id);
+  $row = db_fetch_object($result);
+
+  if (empty($row)) {
+    $sql = 'insert into event_points set fkey_users_id = %d;';
+    $result = db_query($sql, $id);
+    $row->points = $row->tags_con = 0;
+  }
+
+  // Update points.
+  $row->tags_con = 0;
+
+  $sql = 'update event_points set tags_con = %d
+    where fkey_users_id = %d;';
+  $result = db_query($sql, $row->tags_con, $id);
+
+  return $row;
+}
+
+
+function _usl2_fetch_user() {
+
+  global $game, $phone_id, $extra_messages, $cur_level, $next_level, $user;
+
+// only allow access through authorized clients
+  if ((strpos($_SERVER['HTTP_USER_AGENT'], 'com.ziquid.usl2') === FALSE) &&
+    ($_SERVER['REMOTE_ADDR'] != '66.211.170.66') && // paypal IPN
+    ($_SERVER['REMOTE_ADDR'] != '173.0.81.1') && // paypal IPN
+    ($_SERVER['REMOTE_ADDR'] != '173.0.81.33') && // paypal IPN
+    ($user->roles[4] != 'web game access') && // web users
+    (substr(arg(2), 0, 3) != 'fb=') && // identified facebook user
+    (substr(arg(2), 0, 3) != 'ai-') && // AI player
+    (arg(2) != 'facebook') && // unidentified facebook user
+    (substr(arg(2), 0, 3) != 'ms=') // unidentified MS user
+  ) {
+    slack_send_message('Unauthorized user agent of '
+    . $_SERVER['HTTP_USER_AGENT'] . ' for phone_id ' . check_plain(arg(2)),
+      'usl2-errors');
+
+    echo t('This game must be accessed through an authorized client.  ');
+    echo t('Please e-mail support@cheek.com if you have any questions.');
+    db_set_active('default');
+    drupal_exit();
+  }
+
+  if (substr(arg(2), 0, 3) == 'ai-') {
+// AI player -- only allow from certain IPs
+    if ((ip_address() != $_SERVER['SERVER_ADDR']) &&
+    ($user->roles[4] != 'web game access')) {
+      echo 'Error E-4713'; // ai access from a different host
+      exit;
+    }
+  }
+
+
+  $changes_made = FALSE;
+
+  $game = check_plain(arg(0));
+  $phone_id = _stlouis_get_phoneid();
+// if (arg(2) == 'facebook') echo '$phone_id returned is ' . $phone_id . '<br/>';
+  $arg2 = check_plain(arg(2));
+  db_set_active('game_' . $game);
+
+
+
+// check for banned users -- phone_id
+
+  $sql = 'select * from user_blocks where phone_id = "%s";';
+  $result = db_query($sql, $phone_id);
+  $blocked_user = db_fetch_object($result);
+
+  if (!empty($blocked_user) &&
+    $blocked_user->phone_id == $phone_id) { // user is banned!
+    echo 'Error E-0467'; // banned by phone ID
+    exit;
+  }
+
+// check for banned users -- ip address
+
+  $sql = 'select * from user_blocks where ip_address = "%s"
+    or ip_address = "%s";';
+  $result = db_query($sql, $_SERVER['REMOTE_ADDR'], ip_address());
+  $blocked_ip = db_fetch_object($result);
+
+  if (!empty($blocked_ip)) { // user is banned!
+    echo 'Error E-0468'; // banned by IP
+    exit;
+  }
+
+// Nook Color 1.4.1 removes the 'nkc+' prefix -- fix our db
+
+  if (strpos($_SERVER['HTTP_USER_AGENT'], 'BNRV200') !== FALSE) {
+
+    $sql = 'select * from users where phone_id = "%s";';
+    $result = db_query($sql, 'nkc ' . $phone_id);
+    $game_user = db_fetch_object($result);
+
+    if (!empty($game_user)) {
+      $sql = 'delete from users where phone_id = "%s";';
+         $result = db_query($sql, $phone_id);
+      $sql = 'update users set phone_id = "%s"
+        where phone_id = "%s";';
+      $result = db_query($sql, $phone_id, 'nkc ' . $phone_id);
+
+//      mail('joseph@cheek.com', 'Nook Color Phone ID swap',
+//        "nkc $phone_id is now $phone_id");
+    }
+
+  }
+
+/* new code -- jwc 05Jul2013
+  $sql = 'select users.*, elected_positions.energy_bonus as ep_energy_bonus,
+    elected_positions.can_broadcast_to_party, clan_members.fkey_clans_id,
+    elected_positions.max_level as max_level_for_office,
+    elected_positions.name as ep_name,
+    CURRENT_TIMESTAMP as time_now
+
+    from users
+
+    LEFT OUTER JOIN elected_officials
+    ON elected_officials.fkey_users_id = users.id
+    LEFT OUTER JOIN elected_positions
+    ON elected_positions.id = elected_officials.fkey_elected_positions_id
+
+    LEFT OUTER JOIN clan_members
+    ON clan_members.fkey_users_id = users.id
+
+    where phone_id = "%s";';
+  $result = db_query($sql, $phone_id);
+  $game_user = db_fetch_object($result);
+
+  if (empty($game_user->ep_name)) $game_user->ep_name = 'Subjugate';
+*/
+
+  $game_user = fetch_user_by_id($phone_id);
+
+  $sql = 'select sum(equipment.energy_increase * equipment_ownership.quantity)
+    as energy_increase from equipment
+
+    LEFT OUTER JOIN equipment_ownership
+    ON equipment_ownership.fkey_equipment_id = equipment.id
+    WHERE equipment_ownership.fkey_users_id = %d
+
+    union all
+
+    select sum(staff.energy_increase * staff_ownership.quantity)
+    as energy_increase from staff
+
+    LEFT OUTER JOIN staff_ownership
+    ON staff_ownership.fkey_staff_id = staff.id
+    WHERE staff_ownership.fkey_users_id = %d;';
+  $result = db_query($sql, $game_user->id, $game_user->id);
+  $eq = db_fetch_object($result); // equipment
+  $game_user->eq_energy_increase = $eq->energy_increase;
+  $st = db_fetch_object($result); // staff
+  $game_user->st_energy_increase = $st->energy_increase;
+  firep($game_user);
+
+// start welcome wizard if user not in db
+  if (empty($game_user->id)) {
+    if ($arg2 == 'facebook') {
+      echo 'would redirect to welcome ' . $phone_id ;
+      echo '<a href="/' . $game . '/welcome/' . $arg2 . '">do it manually</a>';
+      echo '<a href="/' . $game . '/quests/' . $arg2 . '">go straight to quests</a>';
+      exit;
+    }
+    drupal_goto($game . '/welcome/' . $arg2);
+  }
+
+// save the IP address, user agent of user
+  _stlouis_save_user_agent($game_user);
+  _stlouis_save_user_IP($game_user);
+  _stlouis_check_authKey($game_user);
+
+  if (strpos($_SERVER['HTTP_USER_AGENT'], 'BlueStacks') !== FALSE) {
+    if ($game_user->level <= 50) {
+      _stlouis_set_value($game_user->id, 'sdk', 1);
+    }
+  }
+
+  $sql = 'select experience from levels where level = %d;';
+  $result = db_query($sql, $game_user->level);
+  $level = db_fetch_object($result);
+  $cur_level = $level->experience;
+
+  $sql = 'select experience from levels where level = %d;';
+  $result = db_query($sql, $game_user->level + 1);
+  $level = db_fetch_object($result);
+  $next_level = $level->experience;
+
+  if ($next_level == 0) $next_level = 99999999;
+  $leveled_up = FALSE;
+
+  if ($game_user->experience >= $next_level) { // leveled up!
+
+    $changes_made = $leveled_up = TRUE;
+
+$m = "because experience is $game_user->experience (cur_level: $cur_level,
+next_level: $next_level), s/he moves from $game_user->level to one more";
+
+    if ($game_user->level >= 5)
+      $game_user->skill_points += 4;
+
+    $game_user->energy = $game_user->energy_max;
+    $game_user->actions = max($game_user->actions_max, $game_user->actions);
+    $game_user->level++;
+
+    // leveled up?  read levels again!
+    $sql = 'select experience from levels where level = %d;';
+    $result = db_query($sql, $game_user->level + 1);
+    $level = db_fetch_object($result);
+    $cur_level = $next_level;
+    $next_level = $level->experience;
+    if ($next_level == 0) $next_level = 99999999;
+
+// mail('joseph@cheek.com', "$game_user->username leveled up",
+// "$m
+
+// after level up:
+
+// now cur_level is $cur_level and next_level is $next_level
+// and user level is $game_user->level",
+//   'Content-Type: text/plain; charset=UTF-8');
+
+    _sound('levelup');
+
+    $extra_messages .= '<div class="level-up">
+      <div class="title">
+        <span class="arrows">&lsaquo;&lsaquo;&lsaquo;</span>
+        Level Increase Attained
+        <span class="arrows">&rsaquo;&rsaquo;&rsaquo;</span>
+      </div>';
+
+    if ($game_user->level >= 6) {
+
+      $extra_messages .=
+        '<div class="subsubtitle">
+          <a href="/' . $game . '/increase_skills/' . $arg2 . '/none">' .
+            t('You have <strong>4</strong> new skill points to spend') .
+          '</a>
+        </div>';
+
+    }
+
+    if (!empty($game_user->max_level_for_office) &&
+      $game_user->level > $game_user->max_level_for_office) {
+
+      $sql = 'delete from elected_officials where fkey_users_id = %d;';
+      $result = db_query($sql, $game_user->id);
+      $extra_messages .= '<div class="level-up-text">' .
+        t('You have become too influential to remain
+        in your current office.&nbsp; You resign your position.') . '</div>';
+
+    }
+
+    $extra_messages .= '</div>';
+
+  } // leveled up!
+
+// calculate energy
+
+  $energy_next_gain = strtotime($game_user->energy_next_gain);
+  $energy_bonus = 10 + $game_user->ep_energy_bonus +
+    $game_user->eq_energy_increase + $game_user->st_energy_increase;
+  if (!empty($game_user->fkey_clans_id)) $energy_bonus++; // bonus for joining a clan
+  $secs_until = $energy_next_gain - time();
+
+  while (($game_user->energy < $game_user->energy_max) &&
+  ($secs_until <= 0)) { // do we need energy?
+
+    $changes_made = TRUE;
+    $game_user->energy += $energy_bonus; // add 10 energy
+    $energy_next_gain += 300; // next add in 5 mins
+    $secs_until += 300; // ditto
+
+  }
+
+  if ($game_user->energy > $game_user->energy_max) {
+    $changes_made = TRUE; // just in case
+    $game_user->energy = $game_user->energy_max; // can't go beyond max
+  }
+
+  // calculate income
+
+  $income_next_gain = strtotime($game_user->income_next_gain);
+  $secs_until = $income_next_gain - time();
+  $max_income_gain = 72;
+
+  while ($secs_until <= 0) { // do we get money?
+
+    $changes_made = TRUE;
+    if ($max_income_gain > 0) // add money
+      $game_user->money += $game_user->income - $game_user->expenses;
+    $income_next_gain += 3600; // next add in 60 mins
+    $secs_until += 3600; // ditto
+    $max_income_gain--;
+
+  }
+
+  $actions_next_gain = strtotime($game_user->actions_next_gain);
+  $secs_until = $actions_next_gain - time();
+
+  // calculate actions
+
+  while (($game_user->actions < $game_user->actions_max) &&
+  ($secs_until <= 0)) { // do we need actions?
+
+    $changes_made = TRUE;
+    $game_user->actions++; // add 1 action
+    $actions_next_gain += 180; // next add in 3 mins
+    $secs_until += 180; // ditto
+
+  }
+
+  while (($game_user->actions > $game_user->actions_max) &&
+    ($secs_until <= 0)) { // do we need actions?
+
+    $changes_made = TRUE;
+    $game_user->actions--; // delete 1 action
+    $actions_next_gain += 180; // next add in 3 mins
+    $secs_until += 180; // ditto
+
+  }
+
+// frozen
+
+  if ($game_user->meta == 'frozen')
+    $extra_messages = '<div class="title">- = * F R O Z E N * = -</div>';
+
+  if ($changes_made) { // save changes, if needed
+
+    $game_user->energy_next_gain = date('Y-m-d H:i:s', $energy_next_gain);
+    $game_user->income_next_gain = date('Y-m-d H:i:s', $income_next_gain);
+    $game_user->actions_next_gain = date('Y-m-d H:i:s', $actions_next_gain);
+    $sql = 'update users set energy_next_gain = "%s", energy = %d,
+      energy_max = %d, level = %d, income_next_gain = "%s",
+      actions = %d, actions_next_gain = "%s",
+      money = %d, skill_points = %d, last_access = CURRENT_TIMESTAMP
+      where id = %d;';
+    $result = db_query($sql, $game_user->energy_next_gain,
+    $game_user->energy, $game_user->energy_max,
+    $game_user->level, $game_user->income_next_gain,
+    $game_user->actions, $game_user->actions_next_gain,
+    $game_user->money, $game_user->skill_points, $game_user->id);
+
+  } else { // only save last_access
+
+    $sql = 'update users set last_access = CURRENT_TIMESTAMP
+      where id = %d;';
+    $result = db_query($sql, $game_user->id);
+
+  }
+
+  return $game_user;
+
+}
+
+
+function _usl2_header($game_user) {
+
+  global $game, $phone_id, $extra_messages, $cur_level, $next_level;
+
+  include('game_defs.inc');
+
+  // energy
+
+  $energy_text = '';
+  $energy_bonus = 10 + $game_user->ep_energy_bonus +
+    $game_user->eq_energy_increase + $game_user->st_energy_increase;
+  if (!empty($game_user->fkey_clans_id)) $energy_bonus++; // bonus for joining a clan
+
+  if ($game_user->energy != $game_user->energy_max) {
+
+    $energy_secs_until = strtotime($game_user->energy_next_gain) - time();
+    //firep('secs_until now at ' . $secs_until);
+
+    $energy_minutes = (string) (int) ($energy_secs_until / 60);
+    $energy_seconds = sprintf('%02d', (int) ($energy_secs_until % 60));
+
+    $energy_text = '+' . $energy_bonus . ' in ' .
+      $energy_minutes . ':' . $energy_seconds;
+
+  } else {
+
+    $energy_minutes = $energy_seconds = 0;
+
+  }
+
+  // actions
+
+  $actions_text = '';
+
+  if ($game_user->actions != $game_user->actions_max) {
+
+    $actions_secs_until = strtotime($game_user->actions_next_gain) - time();
+// firep('secs_until now at ' . $secs_until);
+
+    $actions_minutes = (string) (int) ($actions_secs_until / 60);
+    $actions_seconds = sprintf('%02d', (int) ($actions_secs_until % 60));
+
+    $actions_text = ($game_user->actions > $game_user->actions_max ? '-' : '+') .
+      '1 in ' . $actions_minutes . ':' . $actions_seconds;
+
+  } else {
+
+    $actions_minutes = $actions_seconds = 0;
+
+  }
+
+  // income
+
+  $income_text = '';
+  $income_bonus = $game_user->income - $game_user->expenses;
+
+  if ($income_bonus != 0) {
+
+    $income_str = $income_bonus . '';
+
+    $money_secs_until = strtotime($game_user->income_next_gain) - time();
+    //firep('income secs_until now at ' . $money_secs_until);
+
+    $money_minutes = (string) (int) ($money_secs_until / 60);
+    $money_seconds = sprintf('%02d', (int) ($money_secs_until % 60));
+    $money_secondsStr = ':' . sprintf('%02d', (int) ($money_secs_until % 60));
+
+    if (strlen($income_str) > 6) {
+      $income_str = substr($income_str, 0, strlen($income_str) - 3) . 'K';
+      $money_secondsStr = 'm';
+    }
+
+    $income_text = '+' . $income_str . ' in ' . $money_minutes .
+      $money_secondsStr;
+
+  } else {
+
+    $money_minutes = $money_seconds = 0;
+
+  }
+
+  $money_str = $game_user->money . '';
+
+  if (strlen($money_str) > 8) {
+    $money_str = substr($money_str, 0, strlen($money_str) - 6) . 'M';
+  } elseif (strlen($money_str) > 5) {
+    $money_str = substr($money_str, 0, strlen($money_str) - 3) . 'K';
+  }
+
+
+// more skill points?
+
+  if ($game_user->skill_points > 0) {
+
+    $level_text = '<div class="level"><strong><a href="/' . $game .
+      '/increase_skills/' . check_plain(arg(2)) . '/none">' . $game_user->level .
+      '!</a></strong><div class="level-text">Level</div></div>';
+
+  } else {
+
+    $level_text = '<div class="level"><strong>' . $game_user->level .
+      '</strong><div class="level-text">' . t('Level') .'</div></div>';
+
+  }
+
+
+// experience
+
+  $experience_pct = '•' . floor(
+    ($game_user->experience - $cur_level) /
+    ($next_level - $cur_level)
+    * 100) . '%';
+
+// event points
+
+  $sql = 'select points, last_goal_achieved
+    from event_points where fkey_users_id = %d;';
+  $result = db_query($sql, $game_user->id);
+  $points_obj = db_fetch_object($result);
+
+  $points_text = '';
+
+  if ($points_obj->points > 0) { // user has some points
+
+    $sql = 'select points from event_milestones where points > %d
+      order by points asc limit 1;';
+    $result = db_query($sql, $points_obj->last_goal_achieved);
+    $goal_obj = db_fetch_object($result);
+
+    if ($goal_obj->points == 0) $goal_obj->points = 99999999;
+
+firep('points: ' . $points_obj->points);
+firep('points for next prize: ' . $goal_obj->points);
+
+    if ($points_obj->points >= $goal_obj->points) { // user gets a prize!
+
+firep('a prize is deserved!');
+
+// what's goal after this?
+      $sql = 'select points from event_milestones where points > %d
+        order by points asc limit 1;';
+      $result = db_query($sql, $goal_obj->points);
+      $new_goal_obj = db_fetch_object($result);
+
+      if ($new_goal_obj->points == 0) $new_goal_obj->points = 99999999;
+
+// which prize should be given?
+      if ($goal_obj->points >= 50000) {
+        $prize_id = 37; // large gift
+      } else if ($goal_obj->points >= 5000) {
+        $prize_id = 36; // med gift
+      } else {
+        $prize_id = 35; // small gift
+      }
+
+// does user have any of this present?
+      $sql = 'select quantity from equipment_ownership
+        where fkey_users_id = %d
+        and fkey_equipment_id = %d;';
+      $result = db_query($sql, $game_user->id, $prize_id);
+      $equip_quantity = db_fetch_object($result);
+
+      if (empty($equip_quantity)) { // create record
+
+        $sql = 'insert into equipment_ownership
+          (fkey_users_id, fkey_equipment_id, quantity)
+          values
+          (%d, %d, 1);';
+// if ($phone_id == 'abc123')
+        $result = db_query($sql, $game_user->id, $prize_id);
+
+      } else { // update record
+
+        $sql = 'update equipment_ownership
+          set quantity = quantity + 1
+          where fkey_users_id = %d
+          and fkey_equipment_id = %d;';
+// if ($phone_id == 'abc123')
+        $result = db_query($sql, $game_user->id, $prize_id);
+
+      } // create or update record
+
+// update record of user getting this present
+      $sql = 'update event_points set last_goal_achieved = %d
+        where fkey_users_id = %d;';
+// if ($phone_id == 'abc123')
+      $result = db_query($sql, $goal_obj->points, $game_user->id);
+
+// get present title
+      $sql = 'select name from equipment
+        where id = %d;';
+      $result = db_query($sql, $prize_id);
+      $equip_obj = db_fetch_object($result);
+      $equip_name = str_replace(' ', '&nbsp;', strtolower($equip_obj->name));
+
+// if ($phone_id == 'abc123')
+      $points_text = '<div class="subsubtitle">
+        Points: ' . $points_obj->points . ' &nbsp; Next prize at: ' .
+        $new_goal_obj->points . ' points
+      </div>
+      <div class="level-up">
+        <div class="level-up-header">Prize Received!</div>
+        <div class="level-up-image">
+          <img src="/sites/default/files/images/equipment/' .
+          $game . '-' . $prize_id . '.png" width="96">
+        </div>
+        <div class="level-up-text">For gaining ' . $goal_obj->points .
+          ' points, you have received a bonus of <strong>one&nbsp;' .
+          $equip_name . '!</strong></div>
+        <div class="level-up-text">Look for another bonus at ' .
+          $new_goal_obj->points . '&nbsp;points.</div>
+      </div>';
+
+    } else { // user doesn't get a prize
+
+// if ($phone_id == 'abc123')
+      $points_text = '<div class="subsubtitle">
+        Points: ' . $points_obj->points . ' &nbsp; Next prize at: ' .
+        $goal_obj->points . ' points
+      </div>';
+
+    } // does user get a prize?
+
+  } // user has no points
+
+
+// show it!
+
+  $hood = '';
+  $arg2 = check_plain(arg(2));
+
+  echo <<< EOF
+<div class="header $hood">
+<div class="money"><div id="money-id">$money_str</div>
+  <div class="money-text">$game_user->values</div>
+  <div id="income-time">$income_text</div></div>
+<div class="actions"><div id="actions-id">$game_user->actions</div> /
+$game_user->actions_max <div class="actions-text">$actions</div>
+  <div id="actions-time">$actions_text</div>
+  </div>
+  <div class="experience">
+    <strong>$game_user->experience</strong>$experience_pct
+    <div class="experience-text">Experience</div>
+  </div>
+<div class="energy"><div id="energy-id">$game_user->energy</div> /
+$game_user->energy_max <div class="energy-text">$energy</div>
+  <div id="energy-time">$energy_text</div></div>
+<div class="home"><a href="/$game/home/$arg2"><img
+  src="/sites/default/files/images/{$game}_home_icon.png?6" width=28/></a></div>
+$level_text
+</div>
+$points_text
+$extra_messages
+<script type="text/javascript">
+
+  var energy_minutes = $energy_minutes;
+  var energy_seconds = $energy_seconds;
+  var energy = $game_user->energy;
+  var energy_max = $game_user->energy_max;
+  var energy_to_add = $energy_bonus;
+  var energy_interval = 300;
+
+  var money_minutes = $money_minutes;
+  var money_seconds = $money_seconds;
+  var money = $game_user->money;
+  var money_to_add = $income_bonus;
+  var money_interval = 3600;
+
+  var actions_minutes = $actions_minutes;
+  var actions_seconds = $actions_seconds;
+  var actions = $game_user->actions;
+  var actions_max = $game_user->actions_max;
+  var actions_to_add = 1;
+  var actions_interval = 180;
+
+  function display_energy() {
+
+    document.getElementById('energy-id').innerHTML = energy;
+
+    if ((energy < energy_max) && (energy_to_add > 0)) {
+
+      document.getElementById('energy-time').innerHTML =
+        '+' + energy_to_add + ' in ' + energy_minutes + ':' +
+        (energy_seconds < 10 ? '0' + energy_seconds : energy_seconds);
+
+    } else {
+
+      document.getElementById('energy-time').innerHTML = '';
+
+    }
+
+  }
+
+  function display_actions() {
+
+    document.getElementById('actions-id').innerHTML = actions;
+
+    if (actions != actions_max) {
+
+      if (actions > actions_max) {
+        var operand = '-';
+      } else {
+        var operand = '+';
+      }
+
+      document.getElementById('actions-time').innerHTML =
+        operand + actions_to_add + ' in ' + actions_minutes + ':' +
+        (actions_seconds < 10 ? '0' + actions_seconds : actions_seconds);
+
+    } else {
+
+      document.getElementById('actions-time').innerHTML = '';
+
+    }
+
+  }
+
+  function display_money() {
+
+    if (money_to_add > 0) {
+
+      if (money.toString().length > 8) {
+        moneyStr = money.toString().substr(0,money.toString().length - 6) + "M";
+      } else if (money.toString().length > 5) {
+        moneyStr = money.toString().substr(0,money.toString().length - 3) + "K";
+      } else {
+        moneyStr = money.toString();
+      }
+
+      if (money_to_add.toString().length > 5) {
+        money_to_addStr =
+          money_to_add.toString().substr(0,money_to_add.toString().length - 3) +
+            "K";
+        // money_secondsStr = "m";
+        money_secondsStr = ':' + (money_seconds < 10 ? '0' + money_seconds : money_seconds);
+      } else {
+        money_to_addStr = money_to_add.toString();
+        money_secondsStr = ':' + (money_seconds < 10 ? '0' + money_seconds : money_seconds);
+      }
+
+      document.getElementById('money-id').innerHTML = moneyStr;
+
+      document.getElementById('income-time').innerHTML =
+        '+' + money_to_addStr + ' in ' + money_minutes + money_secondsStr;
+
+    }
+
+  }
+
+  function add_all_stuff() {
+
+    if ((energy_seconds == 0) && (energy_minutes > 0)) {
+
+      energy_seconds = 60;
+      energy_minutes -= 1;
+
+    }
+
+    if ((money_seconds == 0) && (money_minutes > 0)) {
+
+      money_seconds = 60;
+      money_minutes -= 1;
+
+    }
+
+    if ((actions_seconds == 0) && (actions_minutes > 0)) {
+
+      actions_seconds = 60;
+      actions_minutes -= 1;
+
+    }
+
+    energy_seconds--;
+    actions_seconds--;
+    money_seconds--;
+
+    if ((energy_seconds == 0) && (energy_minutes == 0)) {
+
+      energy += energy_to_add;
+      energy_seconds = energy_interval % 60;
+      energy_minutes = Math.floor(energy_interval / 60);
+
+    }
+
+    if ((money_seconds == 0) && (money_minutes == 0)) {
+
+      money += money_to_add;
+      money_seconds = money_interval % 60;
+      money_minutes = Math.floor(money_interval / 60);
+
+    }
+
+    if ((actions_seconds == 0) && (actions_minutes == 0) &&
+      (actions < actions_max)) {
+
+      actions += actions_to_add;
+      actions_seconds = actions_interval % 60;
+      actions_minutes = Math.floor(actions_interval / 60);
+
+    }
+
+    if ((actions_seconds == 0) && (actions_minutes == 0) &&
+      (actions > actions_max)) {
+
+      actions -= actions_to_add;
+      actions_seconds = actions_interval % 60;
+      actions_minutes = Math.floor(actions_interval / 60);
+
+    }
+
+    if (energy >= energy_max) {
+
+      energy = energy_max;
+
+    }
+
+    display_energy();
+    display_actions();
+    display_money();
+
+  }
+
+  var interval_timer = setInterval('add_all_stuff()', 1000);
+
+</script>
+EOF;
+
+}
+

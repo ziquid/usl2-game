@@ -1,0 +1,6 @@
+name = StLouis
+description = St. Louis 2114 game
+package = cheekdotcom games
+core = 6.x
+
+version = "6.x-0.01"

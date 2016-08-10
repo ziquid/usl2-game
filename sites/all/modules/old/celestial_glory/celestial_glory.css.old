@@ -1,0 +1,198 @@
+body {
+	background: #102030 !important;
+}
+
+a, a:link, a:visited, a:hover, a:active {
+  color: #2c73f4;
+}
+
+li {
+	list-style: url('/sites/default/files/images/redbullet.png');
+}
+
+.welcome .subtitle {
+	color: #2c73f4;
+	font-weight: bold;
+	margin-top: 9px;
+}
+
+.welcome-continue a, .election-continue a {
+	border: 1px solid #2c73f4;
+	background-color: #2c73f4;
+}
+
+.main-menu, .elders-menu {
+	font-weight: bold;
+}
+
+.main-menu .menu-option {
+	border: 2px solid white;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+  width: 45%;
+  margin: 6px 2%;
+  float: left;
+  background: #333f33;
+}
+
+.elders-menu .menu-option {
+	border: 2px solid white;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+  width: 72%;
+  margin: 10px 14%;
+  text-align: center;
+  background: #333f33;
+}
+
+.menu-option a {
+	text-decoration: none;
+}
+
+.quests .quest-experience, .quests .quest-money,
+.quests .quest-required_energy {
+  color: #2c73f4;
+}
+
+.quests .quest-description {
+  color: #cbb;
+}
+
+.quests-soon .quest-experience, .quests-soon .quest-money,
+.quests-soon .quest-required_energy {
+  color: #0e5221;
+}
+
+.quests-soon a, .quests-soon a:link, .quests-soon a:visited,
+.quests-soon a:hover, .quests-soon a:active {
+  color: #0e5221;
+}
+
+.quest-succeeded, .election-succeeded {
+  color: #2c73f4;
+}
+
+.quest-failed, .election-failed {
+  color: #2c73f4;
+}
+
+.quest-do-again {
+  text-align: right;
+  margin-right: 8px;
+  margin-bottom: 28px;
+}
+
+.quest-do-again-inside {
+	padding: 3px;
+  background-color: #2c73f4;
+  border: 1px solid #2c73f4;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  float: right;
+}
+
+.quest-do-again a {
+	color: #fff;
+	text-decoration: none;
+}
+
+.level-up {
+	border: 1px solid #0e5221;
+  background-color: #0e5221;
+}
+
+.choose-clan-name {
+	margin-left: 6px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #2c73f4;
+}
+
+.choose-clan-name a {
+  text-decoration: none;
+}
+
+.choose-clan-slogan {
+	margin: 0px 0px 8px 54px;
+	font-style: italic;
+	font-size: 11px;
+	color: #bcb;
+}
+
+.help .subtitle {
+	margin: 8px 0 4px;
+}
+
+.help .subtitle {
+	color: #2c73f4;
+}
+
+.wise_old_man_large {
+	background-image: url('/sites/default/files/images/celestial_glory_bishop_large.png');
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+  width: 106px;
+  height: 144px;
+  float: left;
+}
+
+.wise_old_man_small {
+	background-image: url('/sites/default/files/images/celestial_glory_bishop_small.png');
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+  width: 63px;
+  height: 80px;
+  float: left;
+}
+
+.username-error {
+  color: #2c73f4;
+}
+
+.elections-header {
+	color: #2c73f4;
+}
+
+.elections .election-details .action {
+	padding: 3px;
+  background-color: #2c73f4;
+  border: 1px solid #2c73f4;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+}
+
+.elections .election-details .action.not-yet {
+  background-color: #a41c43;
+  border: 1px solid #a41c43;
+}
+
+.elections .election-details .action a {
+  color: #000;
+	text-decoration: none;
+}
+
+                                                                                
+                                                                                                                                                                
+                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                              
+                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                                                                                                                                          
+                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                        
