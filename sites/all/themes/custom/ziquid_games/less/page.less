@@ -1,36 +1,75 @@
-// Default navbar.
-.navbar {
-  &.container,
-  &.container-fluid {
-    margin-top: @navbar-margin-top;
+.welcome {
+  margin: 4px;
+  padding: 6px;
+  border: 1px solid @game-red;
+  border-radius: 6px;
+
+  ul {
+    display: table;
+    -webkit-padding-start: 12px;
   }
 }
 
-// Branding.
-.navbar .logo {
-  margin-right: 0px;
-  padding-left: 5px;
-  padding-right: 5px;
-  background-color: @logo-bg;
-}
-
-// Breadcrumbs.
-.breadcrumb {
-  margin-bottom: @breadcrumb-margin-bottom;
-}
-
-// Page header.
-
-
-// Page body.
-
-
-// Page footer.
-footer a[href="http://gdgwebworks.com/"] {
-  width: 86px;
-  height: 40px;
-  background: url(http://gdgwebworks.com/sites/all/themes/gdg/logo-alpha.png) top left no-repeat;
+.elder-image {
+  width: 96px;
+  height: 144px;
+  background: url(//placehold.it/96x144?text=Elder+image) top left no-repeat;
   font-size: 0px;
   display: inline-block;
-  background-size: 86px 40px;
+  background-size: 96px 144px;
+  float: left;
+  margin-right: 12px;
+  margin-bottom: 8px;
+}
+
+h2 {
+  color: @game-green !important;
+  text-align: center;
+  font-family: @font-family-serif;
+  font-weight: bold;
+  text-transform: capitalize;
+  -webkit-mask-image: url(//themes.googleusercontent.com/static/patterns/putting-green.png);
+  margin-top: 12px;
+  margin-bottom: 9px;
+}
+
+ul {
+  -webkit-padding-start: 24px;
+  color: @game-red;
+}
+
+li {
+  color: @game-white;
+  list-style-image: url(//placehold.it/5x5/ee0000/ffffff);
+}
+
+footer {
+  text-align: center;
+  text-transform: uppercase;
+  opacity: 0.40;
+  img {
+    width: 40%;
+  }
+  .design-studio {
+    top: -0.3em;
+    position: relative;
+    letter-spacing: 0.25em;
+  }
+}
+
+.game-button-exterior {
+  width: 100%;
+  text-align: center;
+  display: inline-block;
+}
+
+.game-button-interior {
+  margin: 20px;
+  padding: 6px 20px 8px;
+  text-transform: uppercase;
+  border: 1px solid rgba(238, 0, 0, 0.7);
+  background-color: rgba(238, 0, 0, 0.5);
+  border-radius: 6px;
+  display: inline-block;
+  text-shadow: 1px 1px @game-red;
 }

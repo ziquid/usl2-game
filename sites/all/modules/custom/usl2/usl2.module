@@ -5,6 +5,24 @@
  * This is the module for USL2.
  */
 
+require_once(drupal_get_path('module', 'usl2') . '/inc/common/menu.inc');
+require_once(drupal_get_path('module', 'usl2') . '/inc/common/functions.inc');
+
+/**
+ * Implementation of hook_permission().
+ */
+function usl2_permission() {
+  return array(
+    'game access' => array(
+      'title' => t('Game Access'),
+      'description' => t('Access the game.'),
+    ),
+    'game web access' => array(
+      'title' => t('Game Web Access'),
+      'description' => t('Access the game via a web browser.'),
+    ),
+  );
+}
 
 function usl2_help($path, $arg) {
 
@@ -20,19 +38,7 @@ function usl2_help($path, $arg) {
   }
 
   return $output;
-
-} // stlouis_help()
-
-
-function usl2_perm() {
-
-  return array('access usl2 content');
-
-} // stlouis_perm()
-
-
-require_once(drupal_get_path('module', 'stlouis') . '/menu.inc');
-require_once(drupal_get_path('module', 'stlouis') . '/functions.inc');
+}
 
 /*
 function usl2_cron() {
@@ -1221,8 +1227,7 @@ function _usl2_check_authKey($game_user) {
   }
 
   // Web game access doesn't count.
-  if (is_array($user->roles)
-  && in_array('web game access', array_values($user->roles))) {
+  if (user_access('usl2 web access')) {
     return;
   }
 
@@ -1445,32 +1450,50 @@ function _usl2_fetch_user() {
   global $game, $phone_id, $extra_messages, $cur_level, $next_level, $user;
 
 // only allow access through authorized clients
-  if ((strpos($_SERVER['HTTP_USER_AGENT'], 'com.ziquid.usl2') === FALSE) &&
+  if ((strpos($_SERVER['HTTP_USER_AGENT'], 'com.ziquid.usl2') === FALSE)
+  &&
     ($_SERVER['REMOTE_ADDR'] != '66.211.170.66') && // paypal IPN
     ($_SERVER['REMOTE_ADDR'] != '173.0.81.1') && // paypal IPN
     ($_SERVER['REMOTE_ADDR'] != '173.0.81.33') && // paypal IPN
-    ($user->roles[4] != 'web game access') && // web users
+    (!user_access('usl2 web access')) && // web users
     (substr(arg(2), 0, 3) != 'fb=') && // identified facebook user
     (substr(arg(2), 0, 3) != 'ai-') && // AI player
     (arg(2) != 'facebook') && // unidentified facebook user
     (substr(arg(2), 0, 3) != 'ms=') // unidentified MS user
   ) {
-    slack_send_message('Unauthorized user agent of '
-    . $_SERVER['HTTP_USER_AGENT'] . ' for phone_id ' . check_plain(arg(2)),
-      'usl2-errors');
+/*
+      mail('joseph@cheek.com', 'unauthorized client',
+        "Unauthorized user agent of " . $_SERVER['HTTP_USER_AGENT'] .
+        " for phone_id " . check_plain(arg(2)));
+*/
+      echo t('This game must be accessed through an authorized client.  ');
+      echo t('Please e-mail zipport@ziquid.com if you have any questions.');
+      exit;
 
-    echo t('This game must be accessed through an authorized client.  ');
-    echo t('Please e-mail support@cheek.com if you have any questions.');
-    db_set_active('default');
-    drupal_exit();
+  }
+
+  if (strpos($arg2, 'cheek.com') !== FALSE) { // Jon?  send headers
+    mail('joseph@ziquid.com', 'Jon? headers',
+    implode('\n', getallheaders()));
+    mail('joseph@ziquid.com', 'Jon? headers',
+    'Jon is back!');
+  }
+
+  if (($user->uid != 0) &&
+    (strpos($_SERVER['HTTP_USER_AGENT'], 'com.ziquid') === FALSE)) {
+/*
+    mail('joseph@cheek.com', 'logged-in user access but no com.cheek!',
+      $_SERVER['HTTP_USER_AGENT'] . "\n\n" .
+      print_r($user, TRUE));
+*/
   }
 
   if (substr(arg(2), 0, 3) == 'ai-') {
 // AI player -- only allow from certain IPs
     if ((ip_address() != $_SERVER['SERVER_ADDR']) &&
     ($user->roles[4] != 'web game access')) {
-      echo 'Error E-4713'; // ai access from a different host
-      exit;
+      drupal_goto(check_plain(arg(0)) . '/error/'
+        . check_plain(arg(2)) . '/E-4713'); // ai access from a different host
     }
   }
 
@@ -1478,12 +1501,12 @@ function _usl2_fetch_user() {
   $changes_made = FALSE;
 
   $game = check_plain(arg(0));
-  $phone_id = _stlouis_get_phoneid();
+  $phone_id = _usl2_get_phoneid();
 // if (arg(2) == 'facebook') echo '$phone_id returned is ' . $phone_id . '<br/>';
   $arg2 = check_plain(arg(2));
   db_set_active('game_' . $game);
 
-
+  include (drupal_get_path('module', $game) . '/game_defs.inc');
 
 // check for banned users -- phone_id
 
@@ -1493,8 +1516,8 @@ function _usl2_fetch_user() {
 
   if (!empty($blocked_user) &&
     $blocked_user->phone_id == $phone_id) { // user is banned!
-    echo 'Error E-0467'; // banned by phone ID
-    exit;
+    drupal_goto(check_plain(arg(0)) . '/error/'
+      . check_plain(arg(2)) . '/E-0467'); // banned by phone ID
   }
 
 // check for banned users -- ip address
@@ -1505,8 +1528,8 @@ function _usl2_fetch_user() {
   $blocked_ip = db_fetch_object($result);
 
   if (!empty($blocked_ip)) { // user is banned!
-    echo 'Error E-0468'; // banned by IP
-    exit;
+    drupal_goto(check_plain(arg(0)) . '/error/'
+      . check_plain(arg(2)) . '/E-0468'); // banned by IP
   }
 
 // Nook Color 1.4.1 removes the 'nkc+' prefix -- fix our db
@@ -1530,30 +1553,28 @@ function _usl2_fetch_user() {
 
   }
 
-/* new code -- jwc 05Jul2013
-  $sql = 'select users.*, elected_positions.energy_bonus as ep_energy_bonus,
-    elected_positions.can_broadcast_to_party, clan_members.fkey_clans_id,
-    elected_positions.max_level as max_level_for_office,
-    elected_positions.name as ep_name,
-    CURRENT_TIMESTAMP as time_now
 
-    from users
+// get uid
 
-    LEFT OUTER JOIN elected_officials
-    ON elected_officials.fkey_users_id = users.id
-    LEFT OUTER JOIN elected_positions
-    ON elected_positions.id = elected_officials.fkey_elected_positions_id
-
-    LEFT OUTER JOIN clan_members
-    ON clan_members.fkey_users_id = users.id
-
+  $sql = 'select id from users
     where phone_id = "%s";';
   $result = db_query($sql, $phone_id);
   $game_user = db_fetch_object($result);
 
-  if (empty($game_user->ep_name)) $game_user->ep_name = 'Subjugate';
-*/
+// update expenses
 
+  $sql = 'update users set expenses =
+
+    (SELECT sum(equipment.upkeep * equipment_ownership.quantity)
+    as expenses from equipment
+    left join equipment_ownership
+    on equipment_ownership.fkey_equipment_id = equipment.id and
+    equipment_ownership.fkey_users_id = %d)
+
+    where id = %d;';
+  $result = db_query($sql, $game_user->id, $game_user->id);
+
+  // Get full user object.
   $game_user = fetch_user_by_id($phone_id);
 
   $sql = 'select sum(equipment.energy_increase * equipment_ownership.quantity)
@@ -1576,27 +1597,29 @@ function _usl2_fetch_user() {
   $game_user->eq_energy_increase = $eq->energy_increase;
   $st = db_fetch_object($result); // staff
   $game_user->st_energy_increase = $st->energy_increase;
-  firep($game_user);
+firep($game_user);
 
 // start welcome wizard if user not in db
   if (empty($game_user->id)) {
+/*
     if ($arg2 == 'facebook') {
       echo 'would redirect to welcome ' . $phone_id ;
       echo '<a href="/' . $game . '/welcome/' . $arg2 . '">do it manually</a>';
       echo '<a href="/' . $game . '/quests/' . $arg2 . '">go straight to quests</a>';
       exit;
     }
+*/
     drupal_goto($game . '/welcome/' . $arg2);
   }
 
 // save the IP address, user agent of user
-  _stlouis_save_user_agent($game_user);
-  _stlouis_save_user_IP($game_user);
-  _stlouis_check_authKey($game_user);
+  _usl2_save_user_agent($game_user);
+  _usl2_save_user_IP($game_user);
+  _usl2_check_authKey($game_user);
 
   if (strpos($_SERVER['HTTP_USER_AGENT'], 'BlueStacks') !== FALSE) {
     if ($game_user->level <= 50) {
-      _stlouis_set_value($game_user->id, 'sdk', 1);
+      _usl2_set_value($game_user->id, 'sdk', 1);
     }
   }
 
@@ -1609,7 +1632,6 @@ function _usl2_fetch_user() {
   $result = db_query($sql, $game_user->level + 1);
   $level = db_fetch_object($result);
   $next_level = $level->experience;
-
   if ($next_level == 0) $next_level = 99999999;
   $leveled_up = FALSE;
 
@@ -1647,11 +1669,9 @@ next_level: $next_level), s/he moves from $game_user->level to one more";
     _sound('levelup');
 
     $extra_messages .= '<div class="level-up">
-      <div class="title">
-        <span class="arrows">&lsaquo;&lsaquo;&lsaquo;</span>
-        Level Increase Attained
-        <span class="arrows">&rsaquo;&rsaquo;&rsaquo;</span>
-      </div>';
+      <div class="level-up-header">Congratulations!</div>
+      <div class="level-up-text">You have reached level ' .
+    $game_user->level . '!</div>';
 
     if ($game_user->level >= 6) {
 
@@ -1692,8 +1712,8 @@ next_level: $next_level), s/he moves from $game_user->level to one more";
 
     $changes_made = TRUE;
     $game_user->energy += $energy_bonus; // add 10 energy
-    $energy_next_gain += 300; // next add in 5 mins
-    $secs_until += 300; // ditto
+    $energy_next_gain += $energy_wait; // next add in $energy_wait secs
+    $secs_until += $energy_wait; // ditto
 
   }
 
@@ -1773,6 +1793,17 @@ next_level: $next_level), s/he moves from $game_user->level to one more";
 
   }
 
+  if ($leveled_up && ($game_user->level == 6) &&
+    (substr($game_user->meta, 0, 3) !== 'ai_')) {
+
+//    if (($game == 'stlouis') || ($game == 'robber_barons'))
+      drupal_goto($game . '/choose_clan/' . $arg2 . '/0');
+
+//    if ($game == 'celestial_glory')
+//      drupal_goto($game . '/debates/' . $arg2);
+
+  }
+
   return $game_user;
 
 }
@@ -1781,8 +1812,7 @@ next_level: $next_level), s/he moves from $game_user->level to one more";
 function _usl2_header($game_user) {
 
   global $game, $phone_id, $extra_messages, $cur_level, $next_level;
-
-  include('game_defs.inc');
+  include (drupal_get_path('module', $game) . '/game_defs.inc');
 
   // energy
 
@@ -2026,7 +2056,7 @@ $game_user->actions_max <div class="actions-text">$actions</div>
 $game_user->energy_max <div class="energy-text">$energy</div>
   <div id="energy-time">$energy_text</div></div>
 <div class="home"><a href="/$game/home/$arg2"><img
-  src="/sites/default/files/images/{$game}_home_icon.png?6" width=28/></a></div>
+  src="/sites/default/files/images/{$game}_home_icon_large.png"/></a></div>
 $level_text
 </div>
 $points_text
@@ -2038,7 +2068,7 @@ $extra_messages
   var energy = $game_user->energy;
   var energy_max = $game_user->energy_max;
   var energy_to_add = $energy_bonus;
-  var energy_interval = 300;
+  var energy_interval = $energy_wait;
 
   var money_minutes = $money_minutes;
   var money_seconds = $money_seconds;

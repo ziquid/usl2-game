@@ -1560,8 +1560,7 @@ function _stlouis_fetch_user() {
   global $game, $phone_id, $extra_messages, $cur_level, $next_level, $user;
 
 // only allow access through authorized clients
-  if ((strpos($_SERVER['HTTP_USER_AGENT'], 'com.cheek.stlouis') === FALSE) &&
-    (strpos($_SERVER['HTTP_USER_AGENT'], 'com.ziquid.stl2114') === FALSE) &&
+  if ((strpos($_SERVER['HTTP_USER_AGENT'], 'com.ziquid.usl2') === FALSE) &&
     ($_SERVER['REMOTE_ADDR'] != '66.211.170.66') && // paypal IPN
     ($_SERVER['REMOTE_ADDR'] != '173.0.81.1') && // paypal IPN
     ($_SERVER['REMOTE_ADDR'] != '173.0.81.33') && // paypal IPN
