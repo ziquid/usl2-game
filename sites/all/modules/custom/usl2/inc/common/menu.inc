@@ -13,6 +13,15 @@ function usl2_menu() {
 
   $items = array();
 
+  $items['usl2/error/%game_id/%'] = array(
+    'title' => 'Game Error',
+    'page callback' => 'game_error_callback',
+    'page arguments' => array(2, 3),
+    'access callback' => 'game_normal_access',
+    'file' => 'inc/error.inc',
+    'type' => MENU_CALLBACK,
+  );
+
   $items['usl2/home/%game_user'] = array(
     'title' => 'Game Home Page',
     'page callback' => 'game_home_callback',
@@ -21,7 +30,7 @@ function usl2_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $items['usl2/welcome/%'] = array(
+  $items['usl2/welcome/%game_id'] = array(
     'title' => 'Game Welcome',
     'page callback' => 'game_welcome_callback',
     'page arguments' => array(2),
@@ -791,8 +800,6 @@ function usl2_elders_callback($phone_id) {
   return theme('usl2_elders', $phone_id);
 
 }
-
-
 function usl2_elders_ask_reset_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -802,8 +809,6 @@ function usl2_elders_ask_reset_callback($phone_id) {
   return theme('usl2_elders_ask_reset', $phone_id);
 
 }
-
-
 function usl2_elders_do_reset_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -813,8 +818,6 @@ function usl2_elders_do_reset_callback($phone_id) {
   return theme('usl2_elders_do_reset', $phone_id);
 
 }
-
-
 function usl2_elders_ask_reset_skills_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -824,8 +827,6 @@ function usl2_elders_ask_reset_skills_callback($phone_id) {
   return theme('usl2_elders_ask_reset_skills', $phone_id);
 
 }
-
-
 function usl2_elders_do_reset_skills_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -835,8 +836,6 @@ function usl2_elders_do_reset_skills_callback($phone_id) {
   return theme('usl2_elders_do_reset_skills', $phone_id);
 
 }
-
-
 function usl2_elders_do_fill_callback($phone_id, $fill_type) {
 
   if (empty($phone_id) || empty($fill_type)) {
@@ -846,8 +845,6 @@ function usl2_elders_do_fill_callback($phone_id, $fill_type) {
   return theme('usl2_elders_do_fill', $phone_id, $fill_type);
 
 }
-
-
 function usl2_elders_rename_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -857,8 +854,6 @@ function usl2_elders_rename_callback($phone_id) {
   return theme('usl2_elders_rename', $phone_id);
 
 }
-
-
 function usl2_elders_set_password_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -868,8 +863,6 @@ function usl2_elders_set_password_callback($phone_id) {
   return theme('usl2_elders_set_password', $phone_id);
 
 }
-
-
 function usl2_elders_ask_purchase_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -879,8 +872,6 @@ function usl2_elders_ask_purchase_callback($phone_id) {
   return theme('usl2_elders_ask_purchase', $phone_id);
 
 }
-
-
 function usl2_elders_new_ask_purchase_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -890,8 +881,6 @@ function usl2_elders_new_ask_purchase_callback($phone_id) {
   return theme('usl2_elders_new_ask_purchase', $phone_id);
 
 }
-
-
 function usl2_elders_do_purchase_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -901,8 +890,6 @@ function usl2_elders_do_purchase_callback($phone_id) {
   return theme('usl2_elders_do_purchase', $phone_id);
 
 }
-
-
 function usl2_elders_check_receipt_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -912,8 +899,6 @@ function usl2_elders_check_receipt_callback($phone_id) {
   return theme('usl2_elders_check_receipt', $phone_id);
 
 }
-
-
 function usl2_google_checkout_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -923,8 +908,6 @@ function usl2_google_checkout_callback($phone_id) {
   return theme('usl2_google_checkout', $phone_id);
 
 }
-
-
 function usl2_choose_clan_callback($phone_id, $clan_id) {
 
   if (empty($phone_id) || !is_numeric($clan_id)) {
@@ -934,8 +917,6 @@ function usl2_choose_clan_callback($phone_id, $clan_id) {
   return theme('usl2_choose_clan', $phone_id, $clan_id);
 
 }
-
-
 function usl2_help_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -945,8 +926,6 @@ function usl2_help_callback($phone_id) {
   return theme('usl2_help', $phone_id);
 
 }
-
-
 function usl2_debates_list_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -956,8 +935,6 @@ function usl2_debates_list_callback($phone_id) {
   return theme('usl2_debates_list', $phone_id);
 
 }
-
-
 function usl2_debates_challenge_callback($phone_id, $position_id) {
 
   if (empty($phone_id) || !is_numeric($position_id)) {
@@ -967,8 +944,6 @@ function usl2_debates_challenge_callback($phone_id, $position_id) {
   return theme('usl2_debates_challenge', $phone_id, $position_id);
 
 }
-
-
 function usl2_elections_list_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -978,8 +953,6 @@ function usl2_elections_list_callback($phone_id) {
   return theme('usl2_elections_list', $phone_id);
 
 }
-
-
 function usl2_elections_challenge_callback($phone_id, $position_id) {
 
   if (empty($phone_id) || !is_numeric($position_id)) {
@@ -989,8 +962,6 @@ function usl2_elections_challenge_callback($phone_id, $position_id) {
   return theme('usl2_elections_challenge', $phone_id, $position_id);
 
 }
-
-
 function usl2_favors_list_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -1000,8 +971,6 @@ function usl2_favors_list_callback($phone_id) {
   return theme('usl2_favors_list', $phone_id);
 
 }
-
-
 function usl2_favors_selected_callback($phone_id, $favor_id) {
 
   if (empty($phone_id) || !is_numeric($favor_id)) {
@@ -1083,8 +1052,6 @@ function usl2_top_minions_list_callback($phone_id) {
   return theme('usl2_top_minions_list', $phone_id);
 
 }
-
-
 function usl2_top_wards_list_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -1094,8 +1061,6 @@ function usl2_top_wards_list_callback($phone_id) {
   return theme('usl2_top_wards_list', $phone_id);
 
 }
-
-
 function usl2_top_aldermen_list_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -1105,8 +1070,6 @@ function usl2_top_aldermen_list_callback($phone_id) {
   return theme('usl2_top_aldermen_list', $phone_id);
 
 }
-
-
 function usl2_top_event_points_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -1116,8 +1079,6 @@ function usl2_top_event_points_callback($phone_id) {
   return theme('usl2_top_event_points', $phone_id);
 
 }
-
-
 function usl2_choose_name_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -1127,8 +1088,6 @@ function usl2_choose_name_callback($phone_id) {
   return theme('usl2_choose_name', $phone_id);
 
 }
-
-
 function usl2_enter_referral_code_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -1138,8 +1097,6 @@ function usl2_enter_referral_code_callback($phone_id) {
   return theme('usl2_enter_referral_code', $phone_id);
 
 }
-
-
 function usl2_aides_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -1408,6 +1365,14 @@ function usl2_theme($existing, $type, $theme, $path) {
         'link' => 'home',
         'type' => 'continue',
         'extra_link' => NULL,
+      )
+    ),
+
+    'game_error' => array(
+      'template' => 'templates/pages/error',
+      'variables' => array(
+        'game_id' => '123',
+        'error_code' => '456',
       )
     ),
 
@@ -2059,7 +2024,7 @@ function game_access() {
 }
 
 /**
- * Load an game user object.
+ * Load a game user object.
  *
  * @param string $uid
  *   The uid of the user to load.
@@ -2069,7 +2034,25 @@ function game_access() {
  */
 function game_user_load($uid) {
 
-  return game_fetch_user_by_id($uid);
+  return game_fetch_user_by_id(game_id_load($uid));
+
+}
+
+/**
+ * Check a game user ID.
+ *
+ * @param string $uid
+ *   The uid of the user.
+ *
+ * @return string
+ *   The sanitized uid.
+ *
+ * @todo log if uid has strange characters.
+ */
+function game_id_load($uid) {
+
+  $new_uid = preg_replace('[^A-Za-z0-9=\-]', '', $uid);
+  return $new_uid;
 
 }
 
