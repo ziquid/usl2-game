@@ -13,6 +13,15 @@ function usl2_menu() {
 
   $items = array();
 
+  $items['usl2/choose_party/%game_user/%'] = array(
+    'title' => 'Game Choose Party',
+    'page callback' => 'game_choose_party_callback',
+    'page arguments' => array(2, 3),
+    'access callback' => 'game_normal_access',
+    'file' => 'inc/choose_party.inc',
+    'type' => MENU_CALLBACK,
+  );
+
   $items['usl2/error/%game_id/%'] = array(
     'title' => 'Game Error',
     'page callback' => 'game_error_callback',
@@ -908,15 +917,6 @@ function usl2_google_checkout_callback($phone_id) {
   return theme('usl2_google_checkout', $phone_id);
 
 }
-function usl2_choose_clan_callback($phone_id, $clan_id) {
-
-  if (empty($phone_id) || !is_numeric($clan_id)) {
-    return drupal_access_denied();
-  }
-
-  return theme('usl2_choose_clan', $phone_id, $clan_id);
-
-}
 function usl2_help_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -1106,8 +1106,6 @@ function usl2_aides_callback($phone_id) {
   return theme('usl2_aides', $phone_id);
 
 }
-
-
 function usl2_land_list_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -1117,8 +1115,6 @@ function usl2_land_list_callback($phone_id) {
   return theme('usl2_land_list', $phone_id);
 
 }
-
-
 function usl2_land_buy_callback($phone_id, $land_id, $quantity) {
 
   if (empty($phone_id) || !is_numeric($land_id) || !(is_numeric($quantity) ||
@@ -1368,11 +1364,26 @@ function usl2_theme($existing, $type, $theme, $path) {
       )
     ),
 
+    'game_cant_yet' => array(
+      'template' => 'templates/pages/cant_yet',
+      'variables' => array(
+        'action' => NULL,
+        'time' => NULL,
+      )
+    ),
+
+    'game_choose_party' => array(
+      'template' => 'templates/pages/choose_party',
+      'variables' => array(
+        'current_party_id' => 0,
+      )
+    ),
+
     'game_error' => array(
       'template' => 'templates/pages/error',
       'variables' => array(
-        'game_id' => '123',
-        'error_code' => '456',
+        'game_id' => NULL,
+        'error_code' => NULL,
       )
     ),
 
@@ -1404,14 +1415,12 @@ function usl2_theme($existing, $type, $theme, $path) {
         'phone_id' => NULL
       )
     ),
-
     'usl2_user_favors' => array(
       'template' => 'usl2_user_favors',
       'variables' => array(
         'phone_id' => NULL
       )
     ),
-
     'usl2_favor_perform' => array(
       'template' => 'usl2_favor_perform',
       'variables' => array(
@@ -1419,14 +1428,12 @@ function usl2_theme($existing, $type, $theme, $path) {
         'req_id' => NULL,
       )
     ),
-
     'usl2_user_competencies' => array(
       'template' => 'usl2_user_competencies',
       'variables' => array(
         'phone_id' => NULL
       )
     ),
-
     'usl2_clan_list' => array(
       'template' => 'usl2_clan_list',
       'variables' => array(
@@ -1648,14 +1655,12 @@ function usl2_theme($existing, $type, $theme, $path) {
         'position_id' => NULL,
       )
     ),
-
     'usl2_debates_list' => array(
       'template' => 'usl2_debates_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_debates_challenge' => array(
       'template' => 'usl2_debates_challenge',
       'variables' => array(
@@ -1663,14 +1668,12 @@ function usl2_theme($existing, $type, $theme, $path) {
         'position_id' => NULL,
       )
     ),
-
     'usl2_favors_list' => array(
       'template' => 'usl2_favors_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_favors_selected' => array(
       'template' => 'usl2_favors_selected',
       'variables' => array(
@@ -1678,7 +1681,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'favor_id' => NULL,
       )
     ),
-
     'usl2_favors_selected_2' => array(
       'template' => 'usl2_favors_selected_2',
       'variables' => array(
@@ -1686,28 +1688,24 @@ function usl2_theme($existing, $type, $theme, $path) {
         'favor_id' => NULL,
       )
     ),
-
     'usl2_top20_list' => array(
       'template' => 'usl2_top20_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_top_debaters_list' => array(
       'template' => 'usl2_top_debaters_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_top_income_list' => array(
       'template' => 'usl2_top_income_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_top_masters_list' => array(
       'template' => 'usl2_top_masters_list',
       'variables' => array(
@@ -1878,14 +1876,12 @@ function usl2_theme($existing, $type, $theme, $path) {
         'quantity' => NULL,
       )
     ),
-
     'usl2_weapons_list' => array(
       'template' => 'usl2_weapons_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_weapons_buy' => array(
       'template' => 'usl2_weapons_buy',
       'variables' => array(
@@ -1894,7 +1890,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'quantity' => NULL,
       )
     ),
-
     'usl2_weapons_sell' => array(
       'template' => 'usl2_weapons_sell',
       'variables' => array(
@@ -1903,7 +1898,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'quantity' => NULL,
       )
     ),
-
     'usl2_move' => array(
       'template' => 'usl2_move',
       'variables' => array(
@@ -1911,7 +1905,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'neighborhood_id' => NULL,
       )
     ),
-
     'usl2_move_do' => array(
       'template' => 'usl2_move_do',
       'variables' => array(
@@ -1919,32 +1912,27 @@ function usl2_theme($existing, $type, $theme, $path) {
         'neighborhood_id' => NULL,
       )
     ),
-
     'usl2_authenticate' => array(
       'template' => 'usl2_authenticate',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_playbook_NULL' => array(
       'template' => 'usl2_playbook_NULL',
     ),
-
     'usl2_bounce' => array(
       'template' => 'usl2_bounce',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_elders_preferences' => array(
       'template' => 'usl2_elders_preferences',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_zombie_move' => array(
       'template' => 'usl2_zombie_move',
       'variables' => array(
@@ -1953,14 +1941,12 @@ function usl2_theme($existing, $type, $theme, $path) {
         'hood_id' => NULL,
       )
     ),
-
     'usl2_event_info' => array(
       'template' => 'usl2_event_info',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_event_prizes' => array(
       'template' => 'usl2_event_prizes',
       'variables' => array(
@@ -2072,72 +2058,63 @@ function game_fetch_user_by_id($id) {
   static $user_cache; // simple per-page cache
 
   if (!empty($user_cache[$id])) {
-    firep("query for user $id resulted in cached object");
 // jwc 05Jul2013 -- don't return cached results
 // until we can reliably invalidate the cache
 //    return $user_cache[$id];
   }
 
-  if (gettype($id) == 'string') { // find id from phone_id
-    $where = 'WHERE users.phone_id = "%s"';
-  } else {
-    $where = 'WHERE users.id = %d';
+  db_set_active('game');
+
+  $query = db_select('users', 'u')
+    ->fields('u');
+
+  if (gettype($id) == 'string') {
+    $query->condition('phone_id', $id, '=');
+  }
+  else {
+    $query->condition('id', $id, '=');
   }
 
-  $sql = 'SELECT users.*,
-    user_creations.datetime as startdate,
-    `values`.party_title, `values`.party_icon, `values`.name,
-    elected_positions.name as ep_name,
-    elected_positions.id as ep_level,
-    elected_officials.approval_rating,
-    elected_positions.energy_bonus as ep_energy_bonus,
+  $result = $query->execute()->fetchObject();
+  db_set_active('default');
 
-    clan_members.is_clan_leader,
-    clans.name as clan_name, clans.acronym as clan_acronym,
-    clans.id as fkey_clans_id,
-    event_points.points,
+//     user_creations.datetime as startdate,
+//     `values`.party_title, `values`.party_icon, `values`.name,
+//     elected_positions.name as ep_name,
+//     elected_positions.id as ep_level,
+//     elected_officials.approval_rating,
+//     elected_positions.energy_bonus as ep_energy_bonus,
+//
+//     clan_members.is_clan_leader,
+//     clans.name as clan_name, clans.acronym as clan_acronym,
+//     clans.id as fkey_clans_id,
+//     event_points.points,
+//
+//     neighborhoods.name as location
 
-    neighborhoods.name as location
+//     LEFT JOIN `values` ON users.fkey_values_id = `values`.id
+//
+//     LEFT OUTER JOIN elected_officials
+//     ON elected_officials.fkey_users_id = users.id
+//
+//     LEFT OUTER JOIN elected_positions
+//     ON elected_positions.id = elected_officials.fkey_elected_positions_id
+//
+//     LEFT OUTER JOIN clan_members on clan_members.fkey_users_id = users.id
+//
+//     LEFT OUTER JOIN clans on clan_members.fkey_clans_id = clans.id
+//
+//     LEFT JOIN user_creations on user_creations.phone_id = users.phone_id
+//
+//     LEFT JOIN event_points on event_points.fkey_users_id = users.id
+//
+//     LEFT JOIN neighborhoods on users.fkey_neighborhoods_id = neighborhoods.id
 
-    FROM `users`
+//     game_goto('welcome');
 
-    LEFT JOIN `values` ON users.fkey_values_id = `values`.id
+  if (empty($result->ep_level)) $result->ep_level = 0;
 
-    LEFT OUTER JOIN elected_officials
-    ON elected_officials.fkey_users_id = users.id
-
-    LEFT OUTER JOIN elected_positions
-    ON elected_positions.id = elected_officials.fkey_elected_positions_id
-
-    LEFT OUTER JOIN clan_members on clan_members.fkey_users_id = users.id
-
-    LEFT OUTER JOIN clans on clan_members.fkey_clans_id = clans.id
-
-    LEFT JOIN user_creations on user_creations.phone_id = users.phone_id
-
-    LEFT JOIN event_points on event_points.fkey_users_id = users.id
-
-    LEFT JOIN neighborhoods on users.fkey_neighborhoods_id = neighborhoods.id
-
-    ' . $where . '
-    ORDER by user_creations.datetime ASC
-    LIMIT 1';
-
-  try {
-    db_select('game');
-    $result = db_query($sql, array($id));
-  }
-  catch (Exception $e) {
-    game_goto('welcome');
-  }
-
-  $item = db_fetch_object($result);
-
-  if (empty($item->ep_level)) $item->ep_level = 0;
-
-  $user_cache[$id] = $item;
-
-firep($item);
-  return $item;
+  $user_cache[$id] = $result;
+  return $result;
 
 }

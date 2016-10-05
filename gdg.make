@@ -30,6 +30,9 @@ projects[jquery_update][version] = "2.7"
 projects[master][subdir] = "contrib"
 projects[master][version] = "2.0-beta4"
 
+projects[slack][subdir] = "contrib"
+projects[slack][version] = "1.6"
+
 projects[stage_file_proxy][subdir] = "contrib"
 projects[stage_file_proxy][version] = "1.7"
 

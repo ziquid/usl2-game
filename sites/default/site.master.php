@@ -44,6 +44,7 @@ $conf['master_modules'] = array(
 //     'plupload',
 //     'redirect',
 //     'remove_ron',
+    'slack',
 //     'statistics',
 //     'strongarm',
 //     'subpathauto',

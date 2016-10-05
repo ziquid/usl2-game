@@ -13,9 +13,15 @@
   <h2>
     &ldquo;I'm so embarrassed.&rdquo;
   </h2>
+  <h5>
+    It looks like the game has generated
+  </h5>
   <h3>
-    Error <?php echo $error_code; ?>
+    Error Code <?php echo $error_code; ?>
   </h3>
+  <h5>
+    For your account with
+  </h5>
   <h3>
     User ID <?php echo $game_id; ?>
   </h3>

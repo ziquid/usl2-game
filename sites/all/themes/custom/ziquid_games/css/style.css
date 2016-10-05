@@ -7492,6 +7492,7 @@ body.navbar-tray-open.navbar-vertical.navbar-fixed {
   padding: 6px;
   border: 1px solid #ee0000;
   border-radius: 6px;
+  min-height: 160px;
 }
 .welcome ul {
   display: table;
@@ -7500,7 +7501,7 @@ body.navbar-tray-open.navbar-vertical.navbar-fixed {
 .elder-image {
   width: 96px;
   height: 144px;
-  background: url(//placehold.it/96x144?text=Elder+image) top left no-repeat;
+  background: url(/sites/default/files/images/stlouis_elder.png) top left no-repeat;
   font-size: 0px;
   display: inline-block;
   background-size: 96px 144px;
@@ -7518,6 +7519,32 @@ h2 {
   margin-top: 12px;
   margin-bottom: 9px;
 }
+h3 {
+  text-align: center;
+  font-family: "Roboto Slab", Georgia, "Times New Roman", Times, serif;
+  font-weight: bold;
+  margin-top: 9px;
+  margin-bottom: 7px;
+}
+h3.title {
+  text-transform: capitalize;
+}
+h4 {
+  text-align: center;
+  font-family: "Roboto Slab", Georgia, "Times New Roman", Times, serif;
+  font-weight: bold;
+  margin-top: 7px;
+  margin-bottom: 6px;
+}
+h4.title {
+  text-transform: capitalize;
+}
+h5 {
+  text-align: center;
+  font-family: "Roboto Slab", Georgia, "Times New Roman", Times, serif;
+  margin-top: 6px;
+  margin-bottom: 5px;
+}
 ul {
   -webkit-padding-start: 24px;
   color: #ee0000;
@@ -7525,6 +7552,9 @@ ul {
 li {
   color: #eee8e0;
   list-style-image: url(//placehold.it/5x5/ee0000/ffffff);
+}
+.krumo-root li {
+  color: #020202;
 }
 footer {
   text-align: center;
@@ -7553,4 +7583,14 @@ footer .design-studio {
   border-radius: 6px;
   display: inline-block;
   text-shadow: 1px 1px #ee0000;
+}
+.alert-success {
+  background-color: #33aa00;
+}
+.choose-party-name img {
+  width: 32px;
+}
+.choose-party-slogan {
+  margin-left: 40px;
+  margin-bottom: 8px;
 }

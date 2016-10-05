@@ -1278,14 +1278,16 @@ function _usl2_check_authKey($game_user) {
 /**
  * Return the value in the db if found, or $default if not found.
  */
-function _usl2_get_value($fkey_users_id, $key, $default = NULL) {
+function game_get_value($game_user, $key, $default = NULL) {
 
-  $sql = 'SELECT `value` FROM {user_attributes}
-    WHERE `fkey_users_id` = %d AND `key` = "%s";';
+  $query = db_select('user_attributes', 'ua')
+    ->condition('ua.k', $key, '=')
+    ->condition('ua.fkey_users_id', $game_user->id, '=')
+    ->fields('ua', array('v'))
+    ->execute();
+  $result = $query->fetchObject();
 
-  $result = db_fetch_object(db_query($sql, (int)$fkey_users_id, $key));
-
-  return !empty($result->value) ? $result->value : $default;
+  return !empty($result->v) ? $result->v : $default;
 }
 
 /**
@@ -1444,6 +1446,24 @@ function _usl2_reset_event_tags_con($id) {
   return $row;
 }
 
+/**
+ * Return a random Elder message.
+ *
+ * $return str
+ *   The elder's message.
+ */
+function game_get_elder_message() {
+
+  $msgs = array(
+    'I\'m so embarrassed.',
+    'Pardon me, but...',
+    'Excuse me, but...',
+    'Apologies, however...',
+    'Hey!&nbsp; Listen!',
+  );
+
+  return $msgs[mt_rand(0, count($msgs) - 1)];
+}
 
 function _usl2_fetch_user() {
 

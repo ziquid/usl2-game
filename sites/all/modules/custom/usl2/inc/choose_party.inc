@@ -1,53 +1,65 @@
 <?php
 
-  global $game, $phone_id;
+/**
+ * Allow the user to choose a party.
+ */
 
-  $fetch_user = '_' . arg(0) . '_fetch_user';
-  $fetch_header = '_' . arg(0) . '_header';
+function game_choose_party_callback($game_user, $party_id) {
 
-  $game_user = $fetch_user();
-  include(drupal_get_path('module', $game) . '/game_defs.inc');
-  $arg2 = check_plain(arg(2));
-  $get_value = '_' . arg(0) . '_get_value';
-
-// can't join party?
-  $cant_join_party_time = $get_value($game_user->id, 'cant_join_party');
-  $cant_join_party_time_remaining = !empty($cant_join_party_time) ?
-    (int)$cant_join_party_time - time() : NULL;
-
-//    if ($phone_id == 'abc123')
-//      $cant_join_party_time_remaining = mt_rand(0, 259200);
-
-  if ($cant_join_party_time_remaining > 0) {
-
-    $days_remaining = sprintf('%d',
-      floor($cant_join_party_time_remaining / 86400));
-    $cant_join_party_time_remaining %= 86400;
-    $hours_remaining = sprintf('%02d',
-      floor($cant_join_party_time_remaining / 3600));
-    $minutes_remaining_in_sec = $cant_join_party_time_remaining % 3600;
-    $minutes_remaining = sprintf('%02d',
-      floor($minutes_remaining_in_sec / 60));
-    $seconds_remaining = sprintf('%02d',
-      floor($minutes_remaining_in_sec % 60));
-
-    echo <<< EOF
-<div class="title">You Can't Join a $party Yet!</div>
-<div class="subtitle">
-  Come back in $days_remaining day(s)
-  $hours_remaining:$minutes_remaining:$seconds_remaining
-</div>
-<div class="subtitle">
-  <a href="/$game/home/$arg2">
-    <img src="/sites/default/files/images/{$game}_continue.png"/>
-  </a>
-</div>
-EOF;
-
-    db_set_active('default');
-    return;
-
+  if (!is_numeric($party_id) && $party_id != 'test') {
+    return MENU_ACCESS_DENIED;
   }
+
+  db_set_active('game');
+
+  // Can't join party?
+  $cant_join_party = game_get_value($game_user, 'cant_join_party',
+    REQUEST_TIME);
+
+  // Testing can't join party.
+  if (arg(2) == 'abc123' && arg(3) == 'test') {
+    $cant_join_party = REQUEST_TIME + mt_rand(1, 259200);
+  }
+
+  if ($cant_join_party > REQUEST_TIME) {
+    db_set_active('default');
+
+    return array(
+      array(
+        '#theme' => 'title_image',
+      ),
+      array(
+        '#theme' => 'game_cant_yet',
+        '#action' => 'join a @party',
+        '#time' => $cant_join_party,
+      ),
+      array(
+        '#theme' => 'game_button',
+        '#link' => 'home',
+      ),
+    );
+  }
+
+  if ($party_id == 0) { // show parties
+    db_set_active('default');
+
+    return array(
+      array(
+        '#theme' => 'game_header',
+        '#game_user' => $game_user,
+      ),
+      array(
+        '#theme' => 'game_choose_party',
+        '#current_party_id' => $game_user->fkey_values_id,
+      ),
+    );
+  }
+
+}
+
+
+/*
+
 
 // if they have chosen a clan
   if ($clan_id != 0) {
@@ -125,7 +137,6 @@ EOF;
     }
 
 // add 24-hour waiting period on major actions
-    $set_value = '_' . arg(0) . '_set_value';
     $set_value($game_user->id, 'next_major_action', time() + 86400);
 
     if ($game_user->clan == 0) { // first time choosing?  go to debates
@@ -147,35 +158,7 @@ EOF;
 
   $elder = 'You are met by the city elder again';
 
-  if ($game == 'celestial_glory')
-    $elder = 'You see Lehi in a vision again';
 
-    echo <<< EOF
-<p>&nbsp;</p>
-<div class="welcome">
-  <div class="wise_old_man_large">
-  </div>
-  <p>$elder.&nbsp; &quot;Well done,&quot; he
-    says.&nbsp; &quot;I am impressed by what you have learned.</p>
-  <p class="second">&quot;In order to continue your journey, you will need a
-    mentor.&nbsp; Your mentor will provide guidance and answer any questions
-    that you may have.&nbsp; He or she should have provided you with a
-    referral code.</p>
-  <p class="second">&quot;Alternatively, you can continue on your own without a
-    code.&nbsp; Which do you prefer?&quot;</p>
-</div>
-<div class="try-an-election-wrapper">
-  <div class="try-an-election">
-    <a href="/$game/enter_referral_code/$arg2">I have a referral code</a>
-  </div>
-</div>
-<div class="choose-clan">
-<div class="subtitle">If you don't have a referral code, you may<br/>
-  instead choose a $party_small_lower:</div>
-<br/>
-EOF;
-
-  } else {
 
     echo <<< EOF
 <p>&nbsp;</p>
@@ -205,7 +188,7 @@ EOF;
 
   foreach ($data as $item) {
     $value = strtolower($item->name);
-    $icon = $game . '_clan_' . $item->clan_icon . '.png';
+    $icon = $game . '_clan_' . $item->party_icon . '.png';
 
     echo <<< EOF
 <div>
@@ -222,3 +205,5 @@ EOF;
   echo '</div>';
 
   db_set_active('default');
+
+*/
