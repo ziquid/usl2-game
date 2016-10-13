@@ -1938,59 +1938,91 @@ function land_lose(&$game_user, $id, $quantity, $ex_price = 0) {
 
 }
 
+*/
+function competency_gain($game_user, $id, $level = 1) {
 
-function competency_gain($game_user, $id, $quantity = 1) {
+  drupal_set_message('STUB: competency_gain');
+  return;
 
   if (gettype($id) == 'string') { // find id from string
 
-    $sql = 'select id from competencies
-      where name = "%s";';
+    $sql = 'select * from competencies where name = "%s";';
     $result = db_query($sql, $id);
     $item = db_fetch_object($result);
 
     if (!empty($item)) {
+      $id = (int) $item->id;
+    }
+    else { // not found! create it
 
-      $id = $item->id;
+      $sql = 'insert into competencies (name, level) values ("%s", %d);';
+      $result = db_query($sql, $id, $level);
 
-    } else { // not found! create it
-
-      $sql = 'insert into competencies name = "%s";';
-      $result = db_query($sql, $id);
-
-      $sql = 'select id from competencies
-        where name = "%s";';
+      $sql = 'select * from competencies where name = "%s";';
       $result = db_query($sql, $id);
       $item = db_fetch_object($result);
-      $id = $item->id;
+      $id = (int) $item->id;
 
     }
 
   }
+  else {
+    $sql = 'select * from competencies where id = %d;';
+    $result = db_query($sql, $id);
+    $item = db_fetch_object($result);
 
-  $sql = 'select use_count from user_competencies
+  }
+
+  $sql = 'select use_count, timestamp from user_competencies
     where fkey_competencies_id = %d and fkey_users_id = %d;';
   $result = db_query($sql, $id, $game_user->id);
   $data = db_fetch_object($result);
 
+  if ((time() - strtotime($data->timestamp)) < 300) {
+firep('Last gain of competency &quot;' . $item->name . '&quot; too recent');
+    return FALSE;
+  }
+
   if (!empty($data)) { // already there
 
-    $sql = 'update user_competencies set use_count = use_count + %d
+    $comp_before = competency_level($game_user, $id);
+    $sql = 'update user_competencies set use_count = use_count + 1
       where fkey_competencies_id = %d and fkey_users_id = %d;';
-    $result = db_query($sql, $quantity, $id, $game_user->id);
+    $result = db_query($sql, $id, $game_user->id);
+    $comp_after = competency_level($game_user, $id);
 
-  } else {
+    if ($comp_after->level > $comp_before->level) { // leveled up!
+
+      send_user_message(1, $game_user->id, 1,
+        'You have increased your competency &quot;<span class="initial-caps">'
+      . $item->name . '</span>&quot;!&nbsp; You are now '
+      . $comp_after->level_name_2 . ' and have gained '
+      . $comp_after->level . ' luck.');
+
+      $sql = 'update users set luck = luck + %d where id = %d;';
+      $result = db_query($sql, $comp_after->level, $game_user->id);
+
+    }
+
+  }
+  else { // new competency
 
     $sql = 'insert into user_competencies
       (fkey_users_id, fkey_competencies_id, use_count) values
-      (%d, %d, %d);';
-    $result = db_query($sql, $game_user->id, $id, $quantity);
+      (%d, %d, 1);';
+    $result = db_query($sql, $game_user->id, $id);
+
+    send_user_message(1, $game_user->id, 1,
+      'You have started learning a new competency, &quot;<span
+      class="initial-caps">'
+    . $item->name . '</span>&quot;!');
 
   }
 
   return TRUE;
 
 }
-
+/*
 
 function competency_lose($game_user, $id, $quantity = 1) {
 
@@ -2777,7 +2809,7 @@ firep($eq->name . ' wore out!');
  */
 function game_goto($page = 'home', $extra = NULL) {
 
-  $uri = arg(0) . '/' . $page . '/' . arg(2);
+  $uri = check_plain(arg(0)) . '/' . $page . '/' . check_plain(arg(2));
   if (isset($extra)) {
     $uri .= '/' . $extra;
   }

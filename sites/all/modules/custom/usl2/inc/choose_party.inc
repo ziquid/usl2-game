@@ -2,8 +2,10 @@
 
 /**
  * Allow the user to choose a party.
+ *
+ * @todo: implement game_header theme.
+ * @todo: show message when users chooses same party.
  */
-
 function game_choose_party_callback($game_user, $party_id) {
 
   if (!is_numeric($party_id) && $party_id != 'test') {
@@ -40,7 +42,8 @@ function game_choose_party_callback($game_user, $party_id) {
     );
   }
 
-  if ($party_id == 0) { // show parties
+  // No party chosen yet?  Show list of parties.
+  if ($party_id == 0) {
     db_set_active('default');
 
     return array(
@@ -50,66 +53,84 @@ function game_choose_party_callback($game_user, $party_id) {
       ),
       array(
         '#theme' => 'game_choose_party',
-        '#current_party_id' => $game_user->fkey_values_id,
+        '#game_user' => $game_user,
       ),
     );
   }
 
-}
+  // No change to the party?  Just show stats.
+  if ($party_id == $game_user->fkey_values_id) {
+    game_goto('user');
+  }
 
+  // Changing parties!
+  $query = db_select('values_table', 'v')
+    ->condition('id', $party_id)
+    ->fields('v')
+    ->execute();
+  $new_values = $query->fetch();
 
-/*
+  if (empty($new_values)) {
+    game_goto('error', 'E-8213'); // no such party
+  }
 
+  db_update('users')->fields(array(
+      'fkey_neighborhoods_id' => $new_values->fkey_neighborhoods_id,
+      'fkey_values_id' => $party_id,
+    ))
+    ->condition('id', $game_user->id)
+    ->execute();
 
-// if they have chosen a clan
-  if ($clan_id != 0) {
+  if ($game_user->fkey_values_id == 0) {
 
-    if ($clan_id == $game_user->fkey_values_id) { // no change?  just show stats
-      db_set_active('default');
-      drupal_goto($game . '/user/' . $arg2);
+    // Joining from Anarchists.
+    if ($game_user->experience >= 1000) {
+      competency_gain($game_user, 'conformist', 3);
     }
-
-    // changing clans?  dock experience, bring level down to match
-
+  }
+  else {
+    // Joining from other party.  Dock experience, reset skills and points.
     competency_gain($game_user, 'dissenter', 3);
 
-    $new_experience = floor($game_user->experience * 0.75);
-    if ($new_experience < 75) $new_experience = 75;
+    // Bring experience, level down
+    $new_experience = max(floor($game_user->experience * 0.8), 75);
 
-    $sql = 'SELECT max(level) as new_level from levels where experience <= %d;';
-    $result = db_query($sql, $new_experience);
-    $item = db_fetch_object($result);
-    $new_level = $item->new_level;
+    $sql = 'SELECT max(level) as new_level from levels where experience <= :exp;';
+    $result = db_query($sql, array(':exp' => $new_experience));
+    $new_level = $result->fetchField();
+  dpm($new_level, 'new level');
 
     $sql = 'SELECT count(quests.id) as bonus FROM `quest_group_completion`
       left outer join quests
       on quest_group_completion.fkey_quest_groups_id = quests.group
-      WHERE fkey_users_id = %d and quests.active = 1;';
-    $result = db_query($sql, $game_user->id);
-    $item = db_fetch_object($result); // limited to 1 in db
+      WHERE fkey_users_id = :id and quests.active = 1;';
+    $result = db_query($sql, array(':id' => $game_user->id));
+    $bonus = $result->fetchField();
+    $new_skill_points = ($new_level * 4) + $bonus - 20;
+dpm($bonus, 'bonus skill points from quests');
 
-    $new_skill_points = ($new_level * 4) + $item->bonus - 20;
+    // Charge 5 Luck.
+    $sql = 'update users set luck = luck - 5 where id = :id;';
+    $result = db_query($sql, array(':id' => $game_user->id));
 
-    $sql = 'select * from `values` where id = %d;';
-    $result = db_query($sql, $clan_id);
-    $item = db_fetch_object($result);
+    db_update('users')->fields(array(
+        'experience' => $new_experience,
+        'level' => $new_level,
+        'energy' => 200,
+        'energy_max' => 200,
+        'initiative' => 1,
+        'endurance' => 1,
+        'actions' => 3,
+        'actions_max' => 3,
+        'elocution' => 1,
+        'skill_points' => $new_skill_points,
+      ))
+      ->condition('id', $game_user->id)
+      ->execute();
+  }
 
-// update his/her user entry
-    $sql = 'update users set fkey_neighborhoods_id = %d, fkey_values_id = %d,
-      `values` = "%s", level = %d, experience = %d, energy_max = 200,
-      skill_points = %d, initiative = 1, endurance = 1, actions = 3,
-      actions_max = 3, elocution = 1
-      where id = %d;';
-    $result = db_query($sql, $item->fkey_neighborhoods_id, $clan_id,
-      $item->name, $new_level, $new_experience, $new_skill_points,
-      $game_user->id);
 
-    if ($game_user->fkey_values_id != 0) { // remove Luck if changing clans
-
-      $sql = 'update users set luck = luck - 5 where id = %d;';
-      $result = db_query($sql, $game_user->id);
-
-    }
+/*
 
 // also delete any offices s/he held
     $sql = 'delete from elected_officials where fkey_users_id = %d;';
@@ -154,12 +175,6 @@ function game_choose_party_callback($game_user, $party_id) {
 
 // otherwise they have not chosen a clan or are rechoosing one
 
-  if ($game_user->level <= 6) { // new clan
-
-  $elder = 'You are met by the city elder again';
-
-
-
     echo <<< EOF
 <p>&nbsp;</p>
 <div class="welcome">
@@ -175,35 +190,7 @@ EOF;
 
   }
 
-  $sql = 'SELECT COUNT( users.id ) AS count,  `values` . *
-    FROM  `users`
-    LEFT JOIN  `values` ON users.fkey_values_id =  `values`.id
-    where `values`.user_selectable = 1
-    GROUP BY fkey_values_id
-    ORDER BY count ASC;';
-  $result = db_query($sql);
-  $data = array();
-
-  while ($item = db_fetch_object($result)) $data[] = $item;
-
-  foreach ($data as $item) {
-    $value = strtolower($item->name);
-    $icon = $game . '_clan_' . $item->party_icon . '.png';
-
-    echo <<< EOF
-<div>
-  <div class="choose-clan-icon"><img width="24"
-    src="/sites/default/files/images/$icon"/></div>
-  <span class="choose-clan-name"><a
-  href="/$game/choose_clan/$arg2/$item->id">$item->clan_title</a></span>
-  value $value</div>
-  <div class="choose-clan-slogan">$item->slogan</div>
-EOF;
-
-  }
-
-  echo '</div>';
-
-  db_set_active('default');
-
 */
+  db_set_active('default');
+  return 'hello';
+}

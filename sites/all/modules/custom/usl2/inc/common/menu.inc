@@ -1375,7 +1375,7 @@ function usl2_theme($existing, $type, $theme, $path) {
     'game_choose_party' => array(
       'template' => 'templates/pages/choose_party',
       'variables' => array(
-        'current_party_id' => 0,
+        'game_user' => NULL,
       )
     ),
 
@@ -1390,7 +1390,7 @@ function usl2_theme($existing, $type, $theme, $path) {
     'game_home' => array(
       'template' => 'templates/pages/home',
       'variables' => array(
-        'game_user' => NULL
+        'game_user' => NULL,
       )
     ),
 
@@ -1441,14 +1441,12 @@ function usl2_theme($existing, $type, $theme, $path) {
         'clan_id' => NULL,
       )
     ),
-
     'usl2_clan_list_available' => array(
       'template' => 'usl2_clan_list_available',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_clan_msg' => array(
       'template' => 'usl2_clan_msg',
       'variables' => array(
@@ -1456,7 +1454,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'clan_id' => NULL,
       )
     ),
-
     'usl2_clan_announcements' => array(
       'template' => 'usl2_clan_announcements',
       'variables' => array(
@@ -1464,7 +1461,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'clan_id' => NULL,
       )
     ),
-
     'usl2_class_list' => array(
       'template' => 'usl2_class_list',
       'variables' => array(
@@ -1472,7 +1468,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'class_id' => NULL,
       )
     ),
-
     'usl2_block_user_toggle' => array(
       'template' => 'usl2_block_user_toggle',
       'variables' => array(
@@ -1589,21 +1584,18 @@ function usl2_theme($existing, $type, $theme, $path) {
         'phone_id' => NULL,
       )
     ),
-
     'usl2_elders_do_purchase' => array(
       'template' => 'usl2_elders_do_purchase',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_check_receipt' => array(
       'template' => 'usl2_elders_check_receipt',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_google_checkout' => array(
       'template' => 'usl2_google_checkout',
       'variables' => array(
@@ -1618,21 +1610,18 @@ function usl2_theme($existing, $type, $theme, $path) {
         'clan_id' => NULL,
       )
     ),
-
     'usl2_help' => array(
       'template' => 'usl2_help',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_elections_list' => array(
       'template' => 'usl2_elections_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_elections_challenge' => array(
       'template' => 'usl2_elections_challenge',
       'variables' => array(
@@ -1640,14 +1629,12 @@ function usl2_theme($existing, $type, $theme, $path) {
         'position_id' => NULL,
       )
     ),
-
     'usl2_hierarchies_list' => array(
       'template' => 'usl2_hierarchies_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_hierarchy_rise' => array(
       'template' => 'usl2_hierarchy_rise',
       'variables' => array(
@@ -1712,49 +1699,42 @@ function usl2_theme($existing, $type, $theme, $path) {
         'phone_id' => NULL,
       )
     ),
-
     'usl2_top_minions_list' => array(
       'template' => 'usl2_top_minions_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_top_wards_list' => array(
       'template' => 'usl2_top_wards_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_top_aldermen_list' => array(
       'template' => 'usl2_top_aldermen_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_top_event_points' => array(
       'template' => 'usl2_top_event_points',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_choose_name' => array(
       'template' => 'usl2_choose_name',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_enter_referral_code' => array(
       'template' => 'usl2_enter_referral_code',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_aides' => array(
       'template' => 'usl2_aides',
       'variables' => array(

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * @file
+ * This file shows the choose party screen.
+ *
+ * @todo: Implement alternate text when the user is changing parties.
+ * @todo: Highlight the user's current party.
+ * @todo: Order parties by membership.
+ */
+
   $arg0 = check_plain(arg(0));
   $arg2 = check_plain(arg(2));
   include drupal_get_path('module', 'usl2') . '/inc/common/game_defs.inc';
@@ -20,12 +29,8 @@
     ->fields('v')
     ->execute();
   $data = $query->fetchAll();
-
-//     $item->icon = $arg0 . '_clan_' . $item->party_icon . '.png';
-
   db_set_active('default');
 
-//   _sound('crowd');
 ?>
 <div class="welcome">
   <div class="elder-image">
