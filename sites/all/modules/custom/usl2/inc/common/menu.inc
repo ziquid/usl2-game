@@ -1376,6 +1376,7 @@ function usl2_theme($existing, $type, $theme, $path) {
       'template' => 'templates/pages/choose_party',
       'variables' => array(
         'game_user' => NULL,
+        'first_time' => 1,
       )
     ),
 
@@ -1475,7 +1476,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'phone_id_to_block' => NULL,
       )
     ),
-
     'usl2_msg_delete' => array(
       'template' => 'usl2_msg_delete',
       'variables' => array(
@@ -1483,14 +1483,12 @@ function usl2_theme($existing, $type, $theme, $path) {
         'msg_id' => NULL,
       )
     ),
-
     'usl2_party_msg' => array(
       'template' => 'usl2_party_msg',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_increase_skills' => array(
       'template' => 'usl2_increase_skills',
       'variables' => array(
@@ -1498,14 +1496,12 @@ function usl2_theme($existing, $type, $theme, $path) {
         'skill' => NULL,
       )
     ),
-
     'usl2_quests_list' => array(
       'template' => 'usl2_quests_list',
       'variables' => array(
         'phone_id' => NULL
       )
     ),
-
     'usl2_quests_do' => array(
       'template' => 'usl2_quests_do',
       'variables' => array(
@@ -1513,42 +1509,36 @@ function usl2_theme($existing, $type, $theme, $path) {
         'quest_id' => NULL,
       )
     ),
-
     'usl2_elders' => array(
       'template' => 'usl2_elders',
       'variables' => array(
         'phone_id' => NULL
       )
     ),
-
     'usl2_elders_ask_reset' => array(
       'template' => 'usl2_elders_ask_reset',
       'variables' => array(
         'phone_id' => NULL
       )
     ),
-
     'usl2_elders_do_reset' => array(
       'template' => 'usl2_elders_do_reset',
       'variables' => array(
         'phone_id' => NULL
       )
     ),
-
     'usl2_elders_ask_reset_skills' => array(
       'template' => 'usl2_elders_ask_reset_skills',
       'variables' => array(
         'phone_id' => NULL
       )
     ),
-
     'usl2_elders_do_reset_skills' => array(
       'template' => 'usl2_elders_do_reset_skills',
       'variables' => array(
         'phone_id' => NULL
       )
     ),
-
     'usl2_elders_do_fill' => array(
       'template' => 'usl2_elders_do_fill',
       'variables' => array(
@@ -1556,28 +1546,24 @@ function usl2_theme($existing, $type, $theme, $path) {
         'fill_type' => NULL,
       )
     ),
-
     'usl2_elders_rename' => array(
       'template' => 'usl2_elders_rename',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_elders_set_password' => array(
       'template' => 'usl2_elders_set_password',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_elders_ask_purchase' => array(
       'template' => 'usl2_elders_ask_purchase',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_elders_new_ask_purchase' => array(
       'template' => 'usl2_elders_new_ask_purchase',
       'variables' => array(
@@ -1602,7 +1588,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'phone_id' => NULL,
       )
     ),
-
     'usl2_choose_clan' => array(
       'template' => 'usl2_choose_clan',
       'variables' => array(
@@ -1741,14 +1726,12 @@ function usl2_theme($existing, $type, $theme, $path) {
         'phone_id' => NULL,
       )
     ),
-
     'usl2_land_list' => array(
       'template' => 'usl2_land_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_land_buy' => array(
       'template' => 'usl2_land_buy',
       'variables' => array(
@@ -1757,7 +1740,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'quantity' => NULL,
       )
     ),
-
     'usl2_land_sell' => array(
       'template' => 'usl2_land_sell',
       'variables' => array(
@@ -1766,7 +1748,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'quantity' => NULL,
       )
     ),
-
     'usl2_staff_list' => array(
       'template' => 'usl2_staff_list',
       'variables' => array(
@@ -1782,7 +1763,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'quantity' => NULL,
       )
     ),
-
     'usl2_staff_fire' => array(
       'template' => 'usl2_staff_fire',
       'variables' => array(
@@ -1791,14 +1771,12 @@ function usl2_theme($existing, $type, $theme, $path) {
         'quantity' => NULL,
       )
     ),
-
     'usl2_agents_list' => array(
       'template' => 'usl2_agents_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_agents_hire' => array(
       'template' => 'usl2_agents_hire',
       'variables' => array(
@@ -1807,7 +1785,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'quantity' => NULL,
       )
     ),
-
     'usl2_agents_fire' => array(
       'template' => 'usl2_agents_fire',
       'variables' => array(
@@ -1816,14 +1793,12 @@ function usl2_theme($existing, $type, $theme, $path) {
         'quantity' => NULL,
       )
     ),
-
     'usl2_actions_list' => array(
       'template' => 'usl2_actions_list',
       'variables' => array(
         'phone_id' => NULL,
       )
     ),
-
     'usl2_actions_do' => array(
       'template' => 'usl2_actions_do',
       'variables' => array(
@@ -1831,7 +1806,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'action_id' => NULL,
       )
     ),
-
     'usl2_equipment_list' => array(
       'template' => 'usl2_equipment_list',
       'variables' => array(
@@ -2045,8 +2019,10 @@ function game_fetch_user_by_id($id) {
 
   db_set_active('game');
 
-  $query = db_select('users', 'u')
-    ->fields('u');
+  $query = db_select('users', 'u');
+  $query->join('neighborhoods', 'n', 'u.fkey_neighborhoods_id = n.id');
+  $query->fields('u')
+    ->addField('n', 'name', 'location');
 
   if (gettype($id) == 'string') {
     $query->condition('phone_id', $id, '=');
@@ -2057,7 +2033,7 @@ function game_fetch_user_by_id($id) {
 
   $result = $query->execute()->fetchObject();
   db_set_active('default');
-
+dpm($result, 'user object');
 //     user_creations.datetime as startdate,
 //     `values`.party_title, `values`.party_icon, `values`.name,
 //     elected_positions.name as ep_name,
@@ -2069,8 +2045,6 @@ function game_fetch_user_by_id($id) {
 //     clans.name as clan_name, clans.acronym as clan_acronym,
 //     clans.id as fkey_clans_id,
 //     event_points.points,
-//
-//     neighborhoods.name as location
 
 //     LEFT JOIN `values` ON users.fkey_values_id = `values`.id
 //
@@ -2087,12 +2061,12 @@ function game_fetch_user_by_id($id) {
 //     LEFT JOIN user_creations on user_creations.phone_id = users.phone_id
 //
 //     LEFT JOIN event_points on event_points.fkey_users_id = users.id
-//
-//     LEFT JOIN neighborhoods on users.fkey_neighborhoods_id = neighborhoods.id
 
 //     game_goto('welcome');
 
-  if (empty($result->ep_level)) $result->ep_level = 0;
+  if (empty($result->ep_level)) {
+    $result->ep_level = 0;
+  }
 
   $user_cache[$id] = $result;
   return $result;

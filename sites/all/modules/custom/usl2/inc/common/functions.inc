@@ -2821,3 +2821,32 @@ function game_goto($page = 'home', $extra = NULL) {
   }
 
 }
+
+/**
+ * Return the value in the db if found, or $default if not found.
+ */
+function game_get_value($game_user, $key, $default = NULL) {
+
+  $query = db_select('user_attributes', 'ua')
+    ->condition('ua.k', $key, '=')
+    ->condition('ua.fkey_users_id', $game_user->id, '=')
+    ->fields('ua', array('v'))
+    ->execute();
+  $result = $query->fetchObject();
+
+  return !empty($result->v) ? $result->v : $default;
+}
+
+/**
+ * Set a value in the db; updates it if it already exists.
+ */
+function game_set_value($game_user, $key, $value = NULL) {
+  db_merge('user_attributes')
+    ->key(array('fkey_users_id' => $game_user->id, 'k' => $key))
+    ->fields(array(
+        'v' => $value,
+        'last_update' => REQUEST_TIME
+    ))
+    ->execute();
+}
+

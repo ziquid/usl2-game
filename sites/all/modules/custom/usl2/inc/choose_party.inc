@@ -54,6 +54,9 @@ function game_choose_party_callback($game_user, $party_id) {
       array(
         '#theme' => 'game_choose_party',
         '#game_user' => $game_user,
+        '#first_time' =>
+          ($game_user->fkey_values_id == 0 && $game_user->experience < 1000
+          && empty($game_user->referred_by)) ? 1:0,
       ),
     );
   }
@@ -129,68 +132,45 @@ dpm($bonus, 'bonus skill points from quests');
       ->execute();
   }
 
+  // Delete any offices held.
+  db_delete('elected_officials')
+    ->condition('fkey_users_id', $game_user->id)
+    ->execute();
 
-/*
+  // Find clan membership.
+  $query = db_select('clan_members', 'c')
+    ->condition('fkey_users_id', $game_user->id)
+    ->fields('c')
+    ->execute();
+  $clan = $query->fetch();
 
-// also delete any offices s/he held
-    $sql = 'delete from elected_officials where fkey_users_id = %d;';
-    $result = db_query($sql, $game_user->id);
-
-// and any clan memberships s/he had (disband the clan if s/he was the leader)
-    $sql = 'select * from clan_members where fkey_users_id = %d;';
-    $result = db_query($sql, $game_user->id);
-    $item = db_fetch_object($result);
-
-    if ($item->is_clan_leader) { // clan leader? delete entire clan
-
-      $sql = 'delete from clan_messages where fkey_neighborhoods_id = %d;';
-      $result = db_query($sql, $game_user->fkey_clans_id);
-      $sql = 'delete from clan_members where fkey_clans_id = %d;';
-      $result = db_query($sql, $item->fkey_clans_id);
-      $sql = 'delete from clans where id = %d;';
-      $result = db_query($sql, $item->fkey_clans_id);
-
-    } else {
-
-      $sql = 'delete from clan_members where fkey_users_id = %d;';
-      $result = db_query($sql, $game_user->id);
-
-    }
-
-// add 24-hour waiting period on major actions
-    $set_value($game_user->id, 'next_major_action', time() + 86400);
-
-    if ($game_user->clan == 0) { // first time choosing?  go to debates
-      db_set_active('default');
-      drupal_goto($game . '/debates/' . $arg2);
-    }
-
-// otherwise keep him/her from challenging for a day
-// and show his/her character profile
-    $set_value($game_user->id, 'cant_challenge', time() + 86400);
-    db_set_active('default');
-    drupal_goto($game . '/user/' . $arg2);
-
+  // Clan leader? delete entire clan.
+  if ($clan->is_clan_leader) {
+    db_delete('clan_messages')
+      ->condition('fkey_neighborhoods_id', $game_user->fkey_clans_id)
+      ->execute();
+    db_delete('clan_members')
+      ->condition('fkey_clans_id', $game_user->fkey_clans_id)
+      ->execute();
+    db_delete('clans')
+      ->condition('id', $game_user->fkey_clans_id)
+      ->execute();
+  } else {
+    db_delete('clan_members')
+      ->condition('fkey_users_id', $game_user->id)
+      ->execute();
   }
 
-// otherwise they have not chosen a clan or are rechoosing one
+  // Add a 24-hour waiting period on major actions.
+  game_set_value($game_user, 'next_major_action', REQUEST_TIME + 86400);
 
-    echo <<< EOF
-<p>&nbsp;</p>
-<div class="welcome">
-  <div class="wise_old_man_small">
-  </div>
-  <p>&quot;So you wish to join a different $party_small_lower.&nbsp; You will
-    not rank as highly in that $party_small_lower as you do in your current
-    one, but that is your choice.</p>
-  <p class="second">&quot;Which one do you prefer?&quot;</p>
-</div>
-<div class="choose-clan">
-EOF;
-
+  // Never debated?  Go to debates!
+  if ($game_user->debates_won == 0 && $game_user->debates_lost == 0) {
+    game_goto('debates');
   }
 
-*/
-  db_set_active('default');
-  return 'hello';
+  // Otherwise, keep player from challenging for a day.
+  game_set_value($game_user, 'cant_challenge', REQUEST_TIME + 86400);
+  game_goto('user');
+
 }

@@ -29,6 +29,7 @@
 
   $txt = array(
     '@party' => 'political party',
+    '@party_small' => 'party',
   );
 /*
   $actions = 'Actions';
