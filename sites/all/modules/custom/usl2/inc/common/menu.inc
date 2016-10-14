@@ -39,6 +39,15 @@ function usl2_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  $items['usl2/user/%game_user'] = array(
+    'title' => 'Game User Profile Page',
+    'page callback' => 'game_user_callback',
+    'page arguments' => array(2),
+    'access callback' => 'game_normal_access',
+    'file' => 'inc/user.inc',
+    'type' => MENU_CALLBACK,
+  );
+
   $items['usl2/welcome/%game_id'] = array(
     'title' => 'Game Welcome',
     'page callback' => 'game_welcome_callback',
@@ -48,14 +57,6 @@ function usl2_menu() {
     'type' => MENU_CALLBACK,
   );
 /*
-  $items['usl2/user/%'] = array(
-    'title' => 'USL2 User Profile Page',
-    'page callback' => 'usl2_userprofile_callback',
-    'page arguments' => array(2),
-    'access arguments' => array('access usl2 content'),
-    'type' => MENU_CALLBACK,
-  );
-
   $items['usl2/user_favors/%'] = array(
     'title' => 'USL2 User Favors Page',
     'page callback' => 'usl2_user_favors_callback',
@@ -664,15 +665,6 @@ function game_home_callback($game_user) {
   return theme('game_home', array('game_user' => $game_user));
 }
 
-function usl2_userprofile_callback($phone_id) {
-
-  if (empty($phone_id)) {
-    return drupal_access_denied();
-  }
-
-  return theme('usl2_userprofile', $phone_id);
-
-}
 function usl2_user_favors_callback($phone_id) {
 
   if (empty($phone_id)) {
@@ -1395,6 +1387,14 @@ function usl2_theme($existing, $type, $theme, $path) {
       )
     ),
 
+    'game_user' => array(
+      'template' => 'templates/pages/user',
+      'variables' => array(
+        'game_user' => NULL,
+        'user_to_show' => NULL,
+      ),
+    ),
+
     'game_welcome' => array(
       'template' => 'templates/pages/welcome',
       'variables' => array(
@@ -1410,12 +1410,6 @@ function usl2_theme($existing, $type, $theme, $path) {
     ),
 
 /*
-    'usl2_userprofile' => array(
-      'template' => 'usl2_userprofile',
-      'variables' => array(
-        'phone_id' => NULL
-      )
-    ),
     'usl2_user_favors' => array(
       'template' => 'usl2_user_favors',
       'variables' => array(
@@ -1754,7 +1748,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'phone_id' => NULL,
       )
     ),
-
     'usl2_staff_hire' => array(
       'template' => 'usl2_staff_hire',
       'variables' => array(
@@ -1812,7 +1805,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'phone_id' => NULL,
       )
     ),
-
     'usl2_equipment_buy' => array(
       'template' => 'usl2_equipment_buy',
       'variables' => array(
@@ -1821,7 +1813,6 @@ function usl2_theme($existing, $type, $theme, $path) {
         'quantity' => NULL,
       )
     ),
-
     'usl2_equipment_sell' => array(
       'template' => 'usl2_equipment_sell',
       'variables' => array(
@@ -1973,9 +1964,7 @@ function game_access() {
  *   The user object.
  */
 function game_user_load($uid) {
-
   return game_fetch_user_by_id(game_id_load($uid));
-
 }
 
 /**
@@ -1990,10 +1979,8 @@ function game_user_load($uid) {
  * @todo log if uid has strange characters.
  */
 function game_id_load($uid) {
-
   $new_uid = preg_replace('[^A-Za-z0-9=\-]', '', $uid);
   return $new_uid;
-
 }
 
 /**
@@ -2001,20 +1988,20 @@ function game_id_load($uid) {
  *
  * @param string|int $id
  *   The id of the object to load.
+ * @param bool $reset
+ *   Whether to reset the cache or not.
  *
  * @return stdClass
  *   The user object.
  *
  * @todo refactor as dbTNG.
  */
-function game_fetch_user_by_id($id) {
+function game_fetch_user_by_id($id, $reset = FALSE) {
 
   static $user_cache; // simple per-page cache
 
-  if (!empty($user_cache[$id])) {
-// jwc 05Jul2013 -- don't return cached results
-// until we can reliably invalidate the cache
-//    return $user_cache[$id];
+  if (!empty($user_cache[$id]) && !$reset) {
+    return $user_cache[$id];
   }
 
   db_set_active('game');
@@ -2028,12 +2015,12 @@ function game_fetch_user_by_id($id) {
     $query->condition('phone_id', $id, '=');
   }
   else {
-    $query->condition('id', $id, '=');
+    $query->condition('u.id', $id, '=');
   }
 
   $result = $query->execute()->fetchObject();
   db_set_active('default');
-dpm($result, 'user object');
+
 //     user_creations.datetime as startdate,
 //     `values`.party_title, `values`.party_icon, `values`.name,
 //     elected_positions.name as ep_name,
@@ -2064,9 +2051,9 @@ dpm($result, 'user object');
 
 //     game_goto('welcome');
 
-  if (empty($result->ep_level)) {
-    $result->ep_level = 0;
-  }
+//   if (empty($result->ep_level)) {
+//     $result->ep_level = 0;
+//   }
 
   $user_cache[$id] = $result;
   return $result;
