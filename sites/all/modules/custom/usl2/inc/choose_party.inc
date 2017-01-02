@@ -48,10 +48,6 @@ function game_choose_party_callback($game_user, $party_id) {
 
     return array(
       array(
-        '#theme' => 'game_header',
-        '#game_user' => $game_user,
-      ),
-      array(
         '#theme' => 'game_choose_party',
         '#game_user' => $game_user,
         '#first_time' =>
@@ -63,6 +59,7 @@ function game_choose_party_callback($game_user, $party_id) {
 
   // No change to the party?  Just show stats.
   if ($party_id == $game_user->fkey_values_id) {
+    game_message('You already are a member of that @party.', 'help');
     game_goto('user');
   }
 
@@ -93,6 +90,10 @@ function game_choose_party_callback($game_user, $party_id) {
   }
   else {
     // Joining from other party.  Dock experience, reset skills and points.
+
+    if ($game_user->luck < 5) {
+      game_goto('error', 'E-8246'); // not enough luck
+    }
     competency_gain($game_user, 'dissenter', 3);
 
     // Bring experience, level down

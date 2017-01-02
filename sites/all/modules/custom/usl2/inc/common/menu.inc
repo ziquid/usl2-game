@@ -1380,6 +1380,13 @@ function usl2_theme($existing, $type, $theme, $path) {
       )
     ),
 
+    'game_header' => array(
+      'template' => 'templates/blocks/header',
+      'variables' => array(
+        'game_user' => NULL,
+      ),
+    ),
+
     'game_home' => array(
       'template' => 'templates/pages/home',
       'variables' => array(
@@ -2000,16 +2007,26 @@ function game_fetch_user_by_id($id, $reset = FALSE) {
 
   static $user_cache; // simple per-page cache
 
-  if (!empty($user_cache[$id]) && !$reset) {
-    return $user_cache[$id];
+  if (!empty($user_cache[gettype($id) . ':' . $id]) && !$reset) {
+    return $user_cache[gettype($id) . ':' . $id];
   }
 
   db_set_active('game');
 
   $query = db_select('users', 'u');
   $query->join('neighborhoods', 'n', 'u.fkey_neighborhoods_id = n.id');
+  $query->join('values_table', 'v', 'u.fkey_values_id = v.id');
+  $query->leftJoin('elected_officials', 'eo', 'eo.fkey_users_id = u.id');
+  $query->leftJoin('elected_positions', 'ep', 'eo.fkey_elected_positions_id = ep.id');
+
   $query->fields('u')
+    ->fields('v', array('party_title', 'party_icon'))
+    ->fields('eo', array('approval_rating'))
     ->addField('n', 'name', 'location');
+  $query->addField('v', 'name', 'values_name');
+  $query->addField('ep', 'name', 'ep_name');
+  $query->addField('ep', 'id', 'ep_level');
+  $query->addField('ep', 'energy_bonus', 'ep_energy_bonus');
 
   if (gettype($id) == 'string') {
     $query->condition('phone_id', $id, '=');
@@ -2018,29 +2035,15 @@ function game_fetch_user_by_id($id, $reset = FALSE) {
     $query->condition('u.id', $id, '=');
   }
 
-  $result = $query->execute()->fetchObject();
-  db_set_active('default');
+  $game_user = $query->execute()->fetchObject();
 
 //     user_creations.datetime as startdate,
-//     `values`.party_title, `values`.party_icon, `values`.name,
-//     elected_positions.name as ep_name,
-//     elected_positions.id as ep_level,
-//     elected_officials.approval_rating,
-//     elected_positions.energy_bonus as ep_energy_bonus,
 //
 //     clan_members.is_clan_leader,
 //     clans.name as clan_name, clans.acronym as clan_acronym,
 //     clans.id as fkey_clans_id,
 //     event_points.points,
 
-//     LEFT JOIN `values` ON users.fkey_values_id = `values`.id
-//
-//     LEFT OUTER JOIN elected_officials
-//     ON elected_officials.fkey_users_id = users.id
-//
-//     LEFT OUTER JOIN elected_positions
-//     ON elected_positions.id = elected_officials.fkey_elected_positions_id
-//
 //     LEFT OUTER JOIN clan_members on clan_members.fkey_users_id = users.id
 //
 //     LEFT OUTER JOIN clans on clan_members.fkey_clans_id = clans.id
@@ -2049,13 +2052,48 @@ function game_fetch_user_by_id($id, $reset = FALSE) {
 //
 //     LEFT JOIN event_points on event_points.fkey_users_id = users.id
 
-//     game_goto('welcome');
-
 //   if (empty($result->ep_level)) {
 //     $result->ep_level = 0;
 //   }
 
-  $user_cache[$id] = $result;
-  return $result;
+  // Equipment and Staff bonuses.
+  $sql = 'select sum(equipment.energy_increase * equipment_ownership.quantity)
+    as energy_increase from equipment
+
+    LEFT OUTER JOIN equipment_ownership
+    ON equipment_ownership.fkey_equipment_id = equipment.id
+    WHERE equipment_ownership.fkey_users_id = :id
+
+    union all
+
+    select sum(staff.energy_increase * staff_ownership.quantity)
+    as energy_increase from staff
+
+    LEFT OUTER JOIN staff_ownership
+    ON staff_ownership.fkey_staff_id = staff.id
+    WHERE staff_ownership.fkey_users_id = :id;';
+  $result = db_query($sql, array(':id' => (int) $game_user->id));
+  $eq = $result->fetch(); // equipment
+  $st = $result->fetch(); // staff
+
+  $game_user->eq_energy_increase = $eq->energy_increase;
+  $game_user->st_energy_increase = $st->energy_increase;
+
+  // Levels.
+  $query = db_select('levels', 'l')
+    ->condition('level', array($game_user->level, $game_user->level + 1), 'IN')
+    ->fields('l', array('experience'))
+    ->execute();
+  $levels = $query->fetchCol();
+
+  $game_user->cur_level = (int) $levels[0];
+  $game_user->next_level = (int) $levels[1];
+  if ($game_user->next_level == 0) {
+    $game_user->next_level = 9999999;
+  }
+
+  db_set_active('default');
+  $user_cache[gettype($id) . ':' . $id] = $game_user;
+  return $game_user;
 
 }

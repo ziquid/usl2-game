@@ -76,6 +76,32 @@ li {
   color: @game-black;
 }
 
+header {
+  .money {
+    background-color: @game-red-bg;
+  }
+  .actions {
+    background-color: @game-green-bg;
+    text-align: center;
+    text-transform: capitalize;
+  }
+  .experience {
+    background-color: @game-blue-bg;
+    text-align: right;
+  }
+  .energy {
+    background-color: @game-red-bg;
+    text-transform: capitalize;
+  }
+  .home {
+    text-align: center;
+  }
+  .level {
+    background-color: @game-blue-bg;
+    text-align: right;
+  }
+}
+
 footer {
   text-align: center;
   text-transform: uppercase;
@@ -108,7 +134,8 @@ footer {
 }
 
 .alert-success {
-  background-color: @game-green;
+  background-color: @game-green-bg;
+  color: @game-white;
 }
 
 .choose-party-name img {

@@ -46,6 +46,12 @@ function ziquid_games_preprocess_html(&$variables) {
  */
 function ziquid_games_preprocess_page(&$vars) {
 
+  $game_user = game_user_load(check_plain(arg(2)));
+  $header = array(
+    '#theme' => 'game_header',
+    '#game_user' => $game_user,
+  );
+  $vars['page']['header'] = drupal_render($header);
   $vars['page']['footer'] =
     '<img class="center-block" src="http://www.ziquid.com/sites/default/files/ziquid_800_2.png"/>
     <div class="design-studio">Design Studio</div>';

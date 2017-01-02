@@ -20,10 +20,6 @@ function game_user_callback($game_user) {
 
   return array(
     array(
-      '#theme' => 'game_header',
-      '#game_user' => $game_user,
-    ),
-    array(
       '#theme' => 'game_user',
       '#game_user' => $game_user,
       '#user_to_show' => $user_to_show,

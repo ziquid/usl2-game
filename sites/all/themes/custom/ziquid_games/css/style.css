@@ -7556,6 +7556,29 @@ li {
 .krumo-root li {
   color: #020202;
 }
+header .money {
+  background-color: rgba(238, 0, 0, 0.33);
+}
+header .actions {
+  background-color: rgba(51, 170, 0, 0.33);
+  text-align: center;
+  text-transform: capitalize;
+}
+header .experience {
+  background-color: rgba(0, 128, 182, 0.33);
+  text-align: right;
+}
+header .energy {
+  background-color: rgba(238, 0, 0, 0.33);
+  text-transform: capitalize;
+}
+header .home {
+  text-align: center;
+}
+header .level {
+  background-color: rgba(0, 128, 182, 0.33);
+  text-align: right;
+}
 footer {
   text-align: center;
   text-transform: uppercase;
@@ -7585,7 +7608,8 @@ footer .design-studio {
   text-shadow: 1px 1px #ee0000;
 }
 .alert-success {
-  background-color: #33aa00;
+  background-color: rgba(51, 170, 0, 0.33);
+  color: #eee8e0;
 }
 .choose-party-name img {
   width: 32px;

@@ -1,13 +1,13 @@
 <?php
 
-  define('EVENT_NONE', 0);
-  define('EVENT_DONE', 1);
-  define('EVENT_DEBATE', 2);
+  @define('EVENT_NONE', 0);
+  @define('EVENT_DONE', 1);
+  @define('EVENT_DEBATE', 2);
 
 
 // what to do if we don't have enough of something
-  define('LACKING_SOMETHING_FAIL', 0); // fail if we don't have enough
-  define('LACKING_SOMETHING_USE_ALL', 1); // use all we have
+  @define('LACKING_SOMETHING_FAIL', 0); // fail if we don't have enough
+  @define('LACKING_SOMETHING_USE_ALL', 1); // use all we have
 
 
   $debate_time = 900;
@@ -28,11 +28,12 @@
   }
 
   $txt = array(
+    '@actions' => 'actions',
+    '@energy' => 'energy',
     '@party' => 'political party',
     '@party_small' => 'party',
   );
 /*
-  $actions = 'Actions';
   $alderman = 'Alderman';
   $aldermen = 'Aldermen';
   $alder_short = 'Officiate';
@@ -49,7 +50,6 @@
   $election_tab = 'Hierarchies';
   $elocution = 'Courage'; // 'Favor Slots';
   $endurance = 'Defense';
-  $energy = 'Energy';
   $ep_full = 'Social Ranking';
   $ep_short = 'Social Rank';
   $equipment = 'Materials';

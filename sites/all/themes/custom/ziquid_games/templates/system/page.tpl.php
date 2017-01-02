@@ -75,7 +75,7 @@
 ?>
 <div class="main-container <?php print $container_class; ?>">
 
-  <header role="banner" id="page-header">
+  <header role="banner" id="page-header" class="row">
     <?php if (!empty($site_slogan)): ?>
       <p class="lead"><?php print $site_slogan; ?></p>
     <?php endif; ?>
