@@ -39,6 +39,7 @@ themes/seven
 themes/stark
 web.config
 usl2.dd
+usl2.*.sql
 sites/all/themes/mobile
 
 default.settings.php
